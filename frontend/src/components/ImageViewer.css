@@ -183,6 +183,70 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* 裁剪模态框样式 */
+.crop-modal {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
+}
+
+.crop-modal h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.crop-container {
+  max-height: 70vh;
+  overflow: auto;
+}
+
+.crop-modal-image {
+  max-width: 100%;
+  max-height: 60vh;
+}
+
+.crop-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.cancel-button, .save-button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.cancel-button {
+  background-color: #ccc;
+  color: #333;
+}
+
+.cancel-button:hover {
+  background-color: #bbb;
+}
+
+.save-button {
+  background-color: #007bff;
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #0056b3;
+}
+
+.save-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
 @media (max-width: 768px) {
   .thumbnails-grid {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -204,5 +268,9 @@
   
   .modal-next {
     right: 5px;
+  }
+  
+  .crop-modal {
+    padding: 10px;
   }
 }

@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css';
 import './ImageViewer.css';
 
-const ImageViewer = ({ photos, onDelete, onEdit }) => {
+const ImageViewer = ({ photos, onDelete, onEdit, onCrop }) => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showCropModal, setShowCropModal] = useState(false);
+  const [crop, setCrop] = useState();
+  const [completedCrop, setCompletedCrop] = useState();
+  const [cropImageSrc, setCropImageSrc] = useState('');
 
   const openModal = (photo, index) => {
     setSelectedPhoto(photo);
@@ -43,6 +49,13 @@ const ImageViewer = ({ photos, onDelete, onEdit }) => {
     }
   };
 
+  const handleCrop = (photo, e) => {
+    e.stopPropagation();
+    setCropImageSrc(photo.url);
+    setSelectedPhoto(photo);
+    setShowCropModal(true);
+  };
+
   const handleDownload = (photo, e) => {
     e.stopPropagation();
     const link = document.createElement('a');
@@ -51,6 +64,74 @@ const ImageViewer = ({ photos, onDelete, onEdit }) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const onCropComplete = (c) => {
+    setCompletedCrop(c);
+  };
+
+  const getCroppedImg = (image, crop, fileName) => {
+    const canvas = document.createElement('canvas');
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+    canvas.width = crop.width;
+    canvas.height = crop.height;
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(
+      image,
+      crop.x * scaleX,
+      crop.y * scaleY,
+      crop.width * scaleX,
+      crop.height * scaleY,
+      0,
+      0,
+      crop.width,
+      crop.height
+    );
+
+    return new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          console.error('Canvas is empty');
+          return;
+        }
+        blob.name = fileName;
+        const croppedImageUrl = URL.createObjectURL(blob);
+        resolve(croppedImageUrl);
+      }, 'image/jpeg');
+    });
+  };
+
+  const handleSaveCrop = async () => {
+    if (completedCrop?.width && completedCrop?.height) {
+      const image = document.querySelector('.crop-modal-image');
+      try {
+        const croppedImageUrl = await getCroppedImg(
+          image,
+          completedCrop,
+          'cropped.jpg'
+        );
+        
+        // 收集裁剪参数
+        const cropParams = {
+          cropX: completedCrop.x,
+          cropY: completedCrop.y,
+          cropWidth: completedCrop.width,
+          cropHeight: completedCrop.height
+        };
+        
+        // 如果父组件提供了onCrop回调，则调用它
+        if (onCrop) {
+          onCrop(selectedPhoto.id, croppedImageUrl, cropParams);
+        }
+        
+        setShowCropModal(false);
+        setSelectedPhoto(null);
+      } catch (e) {
+        console.error('裁剪图片时出错:', e);
+      }
+    }
   };
 
   if (!photos || photos.length === 0) {
@@ -77,6 +158,13 @@ const ImageViewer = ({ photos, onDelete, onEdit }) => {
                 ✏️
               </button>
               <button 
+                className="crop-button" 
+                onClick={(e) => handleCrop(photo, e)}
+                title="裁剪"
+              >
+                ✂️
+              </button>
+              <button 
                 className="download-button" 
                 onClick={(e) => handleDownload(photo, e)}
                 title="下载"
@@ -98,7 +186,7 @@ const ImageViewer = ({ photos, onDelete, onEdit }) => {
         ))}
       </div>
 
-      {selectedPhoto && (
+      {selectedPhoto && !showCropModal && (
         <div className="modal-overlay" onClick={closeModal}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <button className="modal-close" onClick={closeModal}>×</button>
@@ -116,6 +204,15 @@ const ImageViewer = ({ photos, onDelete, onEdit }) => {
                   }}
                 >
                   编辑
+                </button>
+                <button 
+                  className="modal-crop-button" 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCrop(selectedPhoto, e);
+                  }}
+                >
+                  裁剪
                 </button>
                 <button 
                   className="modal-download-button" 
@@ -136,6 +233,46 @@ const ImageViewer = ({ photos, onDelete, onEdit }) => {
                   删除
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCropModal && (
+        <div className="modal-overlay">
+          <div className="modal-content crop-modal">
+            <h2>裁剪图片</h2>
+            <div className="crop-container">
+              <ReactCrop
+                crop={crop}
+                onChange={(c) => setCrop(c)}
+                onComplete={onCropComplete}
+                aspect={16 / 9}
+              >
+                <img
+                  src={cropImageSrc}
+                  alt="待裁剪图片"
+                  className="crop-modal-image"
+                />
+              </ReactCrop>
+            </div>
+            <div className="crop-actions">
+              <button 
+                onClick={() => {
+                  setShowCropModal(false);
+                  setSelectedPhoto(null);
+                }} 
+                className="cancel-button"
+              >
+                取消
+              </button>
+              <button 
+                onClick={handleSaveCrop} 
+                className="save-button" 
+                disabled={!completedCrop}
+              >
+                保存
+              </button>
             </div>
           </div>
         </div>

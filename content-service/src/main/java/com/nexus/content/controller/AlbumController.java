@@ -91,6 +91,10 @@ public class AlbumController {
             photo.setSaturation(photoDetails.getSaturation());
             photo.setRotation(photoDetails.getRotation());
             photo.setFilter(photoDetails.getFilter());
+            photo.setCropX(photoDetails.getCropX());
+            photo.setCropY(photoDetails.getCropY());
+            photo.setCropWidth(photoDetails.getCropWidth());
+            photo.setCropHeight(photoDetails.getCropHeight());
             
             Photo updatedPhoto = albumService.updatePhoto(photo);
             return ResponseEntity.ok(updatedPhoto);

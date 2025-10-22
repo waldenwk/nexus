@@ -118,9 +118,19 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 ### 5.4 照片(Photo)
 - id: 照片唯一标识
 - album_id: 相册ID
+- user_id: 用户ID
 - url: 照片URL
 - caption: 照片说明
 - created_at: 上传时间
+- brightness: 亮度调整值
+- contrast: 对比度调整值
+- saturation: 饱和度调整值
+- rotation: 旋转角度
+- filter: 应用的滤镜
+- crop_x: 裁剪起始X坐标
+- crop_y: 裁剪起始Y坐标
+- crop_width: 裁剪宽度
+- crop_height: 裁剪高度
 
 ### 5.5 好友关系(Friendship)
 - id: 关系唯一标识
@@ -159,6 +169,7 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 - DELETE /api/albums/{id} - 删除相册
 - POST /api/albums/{id}/photos - 添加照片到相册
 - GET /api/albums/{id}/photos - 获取相册中的照片
+- PUT /api/albums/photos/{id} - 更新照片（包括编辑和裁剪信息）
 - DELETE /api/photos/{id} - 删除照片
 
 ### 6.5 好友相关

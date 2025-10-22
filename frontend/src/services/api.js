@@ -200,6 +200,23 @@ class ApiService {
       }, 800);
     });
   }
+
+  // 模拟裁剪照片
+  static async cropPhoto(photoId, croppedImage, cropParams) {
+    // 模拟API调用
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: {
+            url: croppedImage,
+            id: photoId,
+            ...cropParams
+          }
+        });
+      }, 800);
+    });
+  }
 }
 
 export default ApiService;

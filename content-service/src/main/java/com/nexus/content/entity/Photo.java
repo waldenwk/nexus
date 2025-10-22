@@ -38,6 +38,19 @@ public class Photo {
     @Column(name = "filter")
     private String filter;
     
+    // 裁剪参数
+    @Column(name = "crop_x")
+    private Integer cropX;
+    
+    @Column(name = "crop_y")
+    private Integer cropY;
+    
+    @Column(name = "crop_width")
+    private Integer cropWidth;
+    
+    @Column(name = "crop_height")
+    private Integer cropHeight;
+    
     // Constructors
     public Photo() {}
     
@@ -127,5 +140,37 @@ public class Photo {
     
     public void setFilter(String filter) {
         this.filter = filter;
+    }
+    
+    public Integer getCropX() {
+        return cropX;
+    }
+    
+    public void setCropX(Integer cropX) {
+        this.cropX = cropX;
+    }
+    
+    public Integer getCropY() {
+        return cropY;
+    }
+    
+    public void setCropY(Integer cropY) {
+        this.cropY = cropY;
+    }
+    
+    public Integer getCropWidth() {
+        return cropWidth;
+    }
+    
+    public void setCropWidth(Integer cropWidth) {
+        this.cropWidth = cropWidth;
+    }
+    
+    public Integer getCropHeight() {
+        return cropHeight;
+    }
+    
+    public void setCropHeight(Integer cropHeight) {
+        this.cropHeight = cropHeight;
     }
 }

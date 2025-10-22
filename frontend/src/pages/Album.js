@@ -99,6 +99,27 @@ const Album = () => {
     }
   };
 
+  const handleCropPhoto = async (photoId, croppedImageUrl, cropParams) => {
+    try {
+      // 在实际应用中，这里应该将裁剪后的图片上传到服务器
+      const response = await ApiService.cropPhoto(photoId, croppedImageUrl, cropParams);
+      if (response.success) {
+        // 更新照片URL和裁剪参数
+        const updatedPhotos = photos.map(photo => 
+          photo.id === photoId 
+            ? { ...photo, url: response.data.url, cropParams } 
+            : photo
+        );
+        
+        setPhotos(updatedPhotos);
+      } else {
+        setError('裁剪图片保存失败: ' + response.message);
+      }
+    } catch (err) {
+      setError('保存裁剪图片时发生错误: ' + err.message);
+    }
+  };
+
   const handleEditPhoto = (photo) => {
     setSelectedPhoto(photo);
     setShowEditorModal(true);
@@ -205,6 +226,7 @@ const Album = () => {
         photos={photos} 
         onDelete={handleDeletePhoto}
         onEdit={handleEditPhoto}
+        onCrop={handleCropPhoto}
       />
       
       {showCropModal && selectedPhoto && (
