@@ -212,6 +212,10 @@ depends_on:
 - `MINIO_SECRET_KEY`: MinIO秘密密钥，默认为`minioadmin`
 - `MINIO_BUCKET`: MinIO存储桶名称，默认为`nexus-files`
 
+### 4.3 国际化(i18n)环境配置
+
+前端应用已支持多语言界面，包括中文和英文。默认语言为中文，用户可以在应用设置中切换语言。无需额外的环境变量配置。
+
 ## 5. 使用说明
 
 ### 5.1 启动服务
