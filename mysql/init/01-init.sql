@@ -64,9 +64,12 @@ CREATE TABLE IF NOT EXISTS photos (
     user_id BIGINT NOT NULL,
     url VARCHAR(255) NOT NULL,
     caption TEXT,
+    latitude DECIMAL(10, 8),
+    longitude DECIMAL(11, 8),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     INDEX idx_album_id (album_id),
-    INDEX idx_user_id (user_id)
+    INDEX idx_user_id (user_id),
+    INDEX idx_location (latitude, longitude)
 );
 
 -- 创建评论表

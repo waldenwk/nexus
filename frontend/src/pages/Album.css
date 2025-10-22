@@ -80,9 +80,16 @@
   margin-bottom: 20px;
 }
 
-.upload-button {
+.album-actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.upload-button, .map-button {
   padding: 10px 20px;
-  background-color: #28a745;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -90,11 +97,11 @@
   font-size: 16px;
 }
 
-.upload-button:hover:not(:disabled) {
-  background-color: #218838;
+.upload-button:hover:not(:disabled), .map-button:hover:not(:disabled) {
+  background-color: #0069d9;
 }
 
-.upload-button:disabled {
+.upload-button:disabled, .map-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;
 }
@@ -149,4 +156,63 @@
   max-width: 90%;
   max-height: 90%;
   overflow: auto;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #999;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.map-modal {
+  width: 90%;
+  height: 80%;
+  max-width: 1200px;
+}
+
+.map-modal .modal-header {
+  position: relative;
+  z-index: 1;
+  background: white;
+}
+
+@media (max-width: 768px) {
+  .album-page {
+    padding: 10px;
+  }
+  
+  .modal-content {
+    max-width: 95%;
+    max-height: 95%;
+  }
+  
+  .map-modal {
+    width: 95%;
+    height: 85%;
+  }
 }

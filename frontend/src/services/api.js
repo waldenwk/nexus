@@ -169,7 +169,7 @@ class ApiService {
   }
 
   // 模拟上传照片
-  static async uploadPhoto(file) {
+  static async uploadPhoto(file, location = null) {
     // 模拟API调用
     return new Promise((resolve) => {
       setTimeout(() => {
@@ -177,7 +177,9 @@ class ApiService {
           success: true,
           data: {
             url: 'https://via.placeholder.com/600x400?text=' + encodeURIComponent(file.name),
-            id: Date.now()
+            id: Date.now(),
+            latitude: location?.latitude || null,
+            longitude: location?.longitude || null
           }
         });
       }, 1000);

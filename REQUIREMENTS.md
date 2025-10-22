@@ -101,6 +101,8 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 - user_id: 用户ID
 - url: 照片URL
 - caption: 照片说明
+- latitude: 纬度坐标
+- longitude: 经度坐标
 - created_at: 上传时间
 - brightness: 亮度调整值
 - contrast: 对比度调整值

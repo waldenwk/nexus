@@ -1,6 +1,7 @@
 package com.nexus.content.entity;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -21,6 +22,13 @@ public class Photo {
     
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    
+    // 地理位置信息
+    @Column(name = "latitude", precision = 10, scale = 8)
+    private BigDecimal latitude;
+    
+    @Column(name = "longitude", precision = 11, scale = 8)
+    private BigDecimal longitude;
     
     // 图片编辑参数
     @Column(name = "brightness")
@@ -101,6 +109,22 @@ public class Photo {
     
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public BigDecimal getLatitude() {
+        return latitude;
+    }
+    
+    public void setLatitude(BigDecimal latitude) {
+        this.latitude = latitude;
+    }
+    
+    public BigDecimal getLongitude() {
+        return longitude;
+    }
+    
+    public void setLongitude(BigDecimal longitude) {
+        this.longitude = longitude;
     }
     
     public Integer getBrightness() {

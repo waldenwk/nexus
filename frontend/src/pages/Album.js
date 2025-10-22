@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ApiService from '../services/api';
 import ImageCrop from '../components/ImageCrop';
 import ImageEditor from '../components/ImageEditor';
 import ImageViewer from '../components/ImageViewer';
+import MapViewer from '../components/MapViewer';
 import './Album.css';
 
 const Album = () => {
@@ -13,14 +14,33 @@ const Album = () => {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [showCropModal, setShowCropModal] = useState(false);
   const [showEditorModal, setShowEditorModal] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
   const [isCreatingAlbum, setIsCreatingAlbum] = useState(false);
   const [albumCreated, setAlbumCreated] = useState(false);
   const [albumId, setAlbumId] = useState(null);
   const [uploading, setUploading] = useState(false);
   const [editing, setEditing] = useState(false);
   const [error, setError] = useState('');
+  const [location, setLocation] = useState({ latitude: null, longitude: null });
   const fileInputRef = useRef(null);
   const navigate = useNavigate();
+
+  // 获取用户当前位置
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setLocation({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          });
+        },
+        (error) => {
+          console.log('无法获取位置信息:', error);
+        }
+      );
+    }
+  }, []);
 
   const handleCreateAlbum = async (e) => {
     e.preventDefault();
@@ -58,13 +78,15 @@ const Album = () => {
     try {
       setUploading(true);
       // 先上传到服务器
-      const response = await ApiService.uploadPhoto(file);
+      const response = await ApiService.uploadPhoto(file, location);
       if (response.success) {
         // 显示裁剪模态框
         setSelectedPhoto({
           file: file,
           url: URL.createObjectURL(file),
-          uploadUrl: response.data.url
+          uploadUrl: response.data.url,
+          latitude: location.latitude,
+          longitude: location.longitude
         });
         setShowCropModal(true);
       } else {
@@ -88,7 +110,9 @@ const Album = () => {
       const newPhoto = {
         id: Date.now(),
         url: selectedPhoto.uploadUrl,
-        createdAt: new Date().toLocaleString()
+        createdAt: new Date().toLocaleString(),
+        latitude: selectedPhoto.latitude,
+        longitude: selectedPhoto.longitude
       };
       
       setPhotos([...photos, newPhoto]);
@@ -155,6 +179,11 @@ const Album = () => {
     setPhotos(photos.filter(photo => photo.id !== photoId));
   };
 
+  const handlePhotoSelectFromMap = (photo) => {
+    setSelectedPhoto(photo);
+    setShowMapModal(false);
+  };
+
   const triggerFileSelect = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -208,9 +237,18 @@ const Album = () => {
       <div className="album-header">
         <h1>{albumName}</h1>
         <p>{albumDescription}</p>
-        <button onClick={triggerFileSelect} className="upload-button" disabled={uploading}>
-          {uploading ? '上传中...' : '上传照片'}
-        </button>
+        <div className="album-actions">
+          <button onClick={triggerFileSelect} className="upload-button" disabled={uploading}>
+            {uploading ? '上传中...' : '上传照片'}
+          </button>
+          <button 
+            onClick={() => setShowMapModal(true)} 
+            className="map-button"
+            disabled={photos.length === 0}
+          >
+            地图视图
+          </button>
+        </div>
         <input
           type="file"
           ref={fileInputRef}
@@ -256,6 +294,26 @@ const Album = () => {
               }}
             />
             {editing && <div className="editor-loading">保存中...</div>}
+          </div>
+        </div>
+      )}
+      
+      {showMapModal && (
+        <div className="modal-overlay">
+          <div className="modal-content map-modal">
+            <div className="modal-header">
+              <h2>照片地图</h2>
+              <button 
+                className="modal-close" 
+                onClick={() => setShowMapModal(false)}
+              >
+                ×
+              </button>
+            </div>
+            <MapViewer 
+              photos={photos} 
+              onPhotoSelect={handlePhotoSelectFromMap} 
+            />
           </div>
         </div>
       )}
