@@ -5,10 +5,12 @@ import com.nexus.user.entity.UserRelationship;
 import com.nexus.user.repository.UserRelationshipRepository;
 import com.nexus.user.service.FeedServiceClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -25,6 +27,22 @@ public class FriendService {
     /** Feed服务客户端，用于在好友关系变更时更新信息流 */
     @Autowired
     private FeedServiceClient feedServiceClient;
+    
+    /**
+     * 异步更新信息流
+     * @param userId 用户ID
+     * @param friendId 好友ID
+     */
+    @Async
+    public CompletableFuture<Void> updateFeedAsync(Long userId, Long friendId) {
+        try {
+            feedServiceClient.updateFeedOnFriendAdded(userId, friendId);
+        } catch (Exception e) {
+            // 实际应用中应该记录日志
+            e.printStackTrace();
+        }
+        return CompletableFuture.completedFuture(null);
+    }
     
     /**
      * 发送好友请求
@@ -51,14 +69,9 @@ public class FriendService {
             UserRelationship reverseRelationship = new UserRelationship(toUserId, fromUserId, RelationshipStatus.ACCEPTED);
             userRelationshipRepository.save(reverseRelationship);
             
-            // 更新双方的信息流，确保好友的内容能够互相看到
-            try {
-                feedServiceClient.updateFeedOnFriendAdded(fromUserId, toUserId);
-                feedServiceClient.updateFeedOnFriendAdded(toUserId, fromUserId);
-            } catch (Exception e) {
-                // 实际应用中应该记录日志
-                e.printStackTrace();
-            }
+            // 异步更新双方的信息流，确保好友的内容能够互相看到
+            updateFeedAsync(fromUserId, toUserId);
+            updateFeedAsync(toUserId, fromUserId);
             
             return userRelationshipRepository.save(relationship);
         }
@@ -96,6 +109,18 @@ public class FriendService {
      */
     public List<Long> getUserFriendIds(Long userId) {
         List<UserRelationship> relationships = getUserFriends(userId);
+        return relationships.stream()
+                .map(UserRelationship::getToUserId)
+                .collect(Collectors.toList());
+    }
+    
+    /**
+     * 批量获取用户的好友ID列表
+     * @param userIds 用户ID列表
+     * @return 好友ID映射
+     */
+    public List<Long> getUserFriendIdsBatch(List<Long> userIds) {
+        List<UserRelationship> relationships = userRelationshipRepository.findByFromUserIdInAndStatus(userIds, RelationshipStatus.ACCEPTED);
         return relationships.stream()
                 .map(UserRelationship::getToUserId)
                 .collect(Collectors.toList());

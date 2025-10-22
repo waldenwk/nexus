@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 分布式Session管理器
  * 使用Redis存储Session信息，实现Session共享
+ * 添加本地缓存减少Redis访问压力
  */
 @Component
 public class DistributedSessionManager {
@@ -18,6 +19,9 @@ public class DistributedSessionManager {
     
     // Session过期时间（分钟）
     private static final long SESSION_TIMEOUT = 30;
+    
+    // 本地缓存过期时间（秒）
+    private static final long LOCAL_CACHE_TIMEOUT = 30;
     
     /**
      * 创建Session

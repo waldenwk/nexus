@@ -23,6 +23,19 @@ public class Photo {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
+    // 图片元数据
+    @Column(name = "file_size")
+    private Long fileSize;
+    
+    @Column(name = "file_type")
+    private String fileType;
+    
+    @Column(name = "width")
+    private Integer width;
+    
+    @Column(name = "height")
+    private Integer height;
+    
     // 地理位置信息
     @Column(name = "latitude", precision = 10, scale = 8)
     private BigDecimal latitude;
@@ -109,6 +122,38 @@ public class Photo {
     
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public Long getFileSize() {
+        return fileSize;
+    }
+    
+    public void setFileSize(Long fileSize) {
+        this.fileSize = fileSize;
+    }
+    
+    public String getFileType() {
+        return fileType;
+    }
+    
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
+    }
+    
+    public Integer getWidth() {
+        return width;
+    }
+    
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+    
+    public Integer getHeight() {
+        return height;
+    }
+    
+    public void setHeight(Integer height) {
+        this.height = height;
     }
     
     public BigDecimal getLatitude() {

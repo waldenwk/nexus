@@ -13,7 +13,7 @@ spring:
       # 最大文件大小
       max-file-size: 10MB
       # 最大请求大小
-      max-request-size: 10MB
+      max-request-size: 50MB
     
 # Eureka客户端配置
 eureka:
@@ -33,6 +33,15 @@ minio:
   # 默认存储桶名称
   bucket: ${MINIO_BUCKET:nexus-files}
   
+# CDN配置
+cdn:
+  # 是否启用CDN
+  enabled: ${CDN_ENABLED:false}
+  # CDN域名
+  domain: ${CDN_DOMAIN:}
+  # CDN协议
+  protocol: ${CDN_PROTOCOL:https}
+  
 # Spring Boot Actuator管理端点配置
 management:
   endpoints:
@@ -44,3 +53,15 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
+
+# Tomcat特定配置，用于提高并发处理能力
+server:
+  tomcat:
+    # 最大连接数
+    max-connections: 8192
+    # 接受队列长度
+    accept-count: 1000
+    # 最大工作线程数
+    max-threads: 400
+    # 最小工作线程数
+    min-spare-threads: 50

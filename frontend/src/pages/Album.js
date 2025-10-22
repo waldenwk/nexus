@@ -23,6 +23,7 @@ const Album = () => {
   const [error, setError] = useState('');
   const [location, setLocation] = useState({ latitude: null, longitude: null });
   const fileInputRef = useRef(null);
+  const fileBatchInputRef = useRef(null); // 批量上传引用
   const navigate = useNavigate();
 
   // 获取用户当前位置
@@ -99,6 +100,48 @@ const Album = () => {
       // 清空文件输入
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
+      }
+    }
+  };
+
+  // 批量上传处理
+  const handleBatchPhotoUpload = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    // 检查是否都是图片文件
+    const nonImageFiles = files.filter(file => !file.type.startsWith('image/'));
+    if (nonImageFiles.length > 0) {
+      setError('请选择图片文件');
+      return;
+    }
+
+    try {
+      setUploading(true);
+      // 批量上传到服务器
+      const response = await ApiService.uploadPhotos(files, location);
+      if (response.success) {
+        // 更新照片列表
+        const newPhotos = response.data.urls.map((url, index) => ({
+          id: Date.now() + index,
+          url: url,
+          createdAt: new Date().toLocaleString(),
+          latitude: location.latitude,
+          longitude: location.longitude
+        }));
+        
+        setPhotos([...photos, ...newPhotos]);
+        setError('');
+      } else {
+        setError('批量图片上传失败: ' + response.message);
+      }
+    } catch (err) {
+      setError('批量图片上传时发生错误: ' + err.message);
+    } finally {
+      setUploading(false);
+      // 清空文件输入
+      if (fileBatchInputRef.current) {
+        fileBatchInputRef.current.value = '';
       }
     }
   };
@@ -190,6 +233,13 @@ const Album = () => {
     }
   };
 
+  // 触发批量上传
+  const triggerBatchFileSelect = () => {
+    if (fileBatchInputRef.current) {
+      fileBatchInputRef.current.click();
+    }
+  };
+
   if (!albumCreated) {
     return (
       <div className="album-create">
@@ -241,6 +291,9 @@ const Album = () => {
           <button onClick={triggerFileSelect} className="upload-button" disabled={uploading}>
             {uploading ? '上传中...' : '上传照片'}
           </button>
+          <button onClick={triggerBatchFileSelect} className="upload-button" disabled={uploading}>
+            {uploading ? '上传中...' : '批量上传'}
+          </button>
           <button 
             onClick={() => setShowMapModal(true)} 
             className="map-button"
@@ -255,6 +308,14 @@ const Album = () => {
           onChange={handlePhotoUpload}
           accept="image/*"
           style={{ display: 'none' }}
+        />
+        <input
+          type="file"
+          ref={fileBatchInputRef}
+          onChange={handleBatchPhotoUpload}
+          accept="image/*"
+          style={{ display: 'none' }}
+          multiple
         />
       </div>
       
@@ -293,7 +354,7 @@ const Album = () => {
                 setSelectedPhoto(null);
               }}
             />
-            {editing && <div className="editor-loading">保存中...</div>}
+            {editing && <div className="editor-loading">保存中...</div>
           </div>
         </div>
       )}

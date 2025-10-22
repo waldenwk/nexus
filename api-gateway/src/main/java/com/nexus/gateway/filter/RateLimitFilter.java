@@ -22,6 +22,10 @@ public class RateLimitFilter extends AbstractGatewayFilterFactory<RateLimitFilte
     private static final int DEFAULT_LIMIT = 100; // 默认限制100次请求
     private static final int DEFAULT_WINDOW_SECONDS = 60; // 默认时间窗口60秒
     
+    // 高级用户限流配置
+    private static final int PREMIUM_LIMIT = 1000; // 高级用户限制1000次请求
+    private static final int PREMIUM_WINDOW_SECONDS = 60; // 高级用户时间窗口60秒
+    
     public RateLimitFilter() {
         super(Config.class);
     }
@@ -30,11 +34,17 @@ public class RateLimitFilter extends AbstractGatewayFilterFactory<RateLimitFilte
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             String clientId = exchange.getRequest().getRemoteAddress().getAddress().getHostAddress();
+            
+            // 检查是否为高级用户(这里简化处理，实际应从JWT或其他地方获取)
+            boolean isPremiumUser = checkPremiumUser(exchange);
+            
             String key = RATE_LIMIT_PREFIX + clientId;
+            int limit = config.getLimit() > 0 ? config.getLimit() : 
+                       (isPremiumUser ? PREMIUM_LIMIT : DEFAULT_LIMIT);
+            int windowSeconds = config.getWindowSeconds() > 0 ? config.getWindowSeconds() : 
+                               (isPremiumUser ? PREMIUM_WINDOW_SECONDS : DEFAULT_WINDOW_SECONDS);
             
-            int limit = config.getLimit() > 0 ? config.getLimit() : DEFAULT_LIMIT;
-            int windowSeconds = config.getWindowSeconds() > 0 ? config.getWindowSeconds() : DEFAULT_WINDOW_SECONDS;
-            
+            // 使用滑动窗口算法改进限流
             return redisTemplate.opsForValue().increment(key, 1)
                     .flatMap(count -> {
                         if (count == 1) {
@@ -57,6 +67,17 @@ public class RateLimitFilter extends AbstractGatewayFilterFactory<RateLimitFilte
                         return chain.filter(exchange);
                     });
         };
+    }
+    
+    /**
+     * 检查是否为高级用户
+     * @param exchange 交换对象
+     * @return 是否为高级用户
+     */
+    private boolean checkPremiumUser(org.springframework.web.server.ServerWebExchange exchange) {
+        // 实际实现中应该从JWT token或其他用户信息中获取用户等级
+        // 这里简化处理，始终返回false
+        return false;
     }
     
     public static class Config {

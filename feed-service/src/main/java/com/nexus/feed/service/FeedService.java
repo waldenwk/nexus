@@ -5,7 +5,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Feed服务类，负责处理用户信息流相关业务逻辑
@@ -21,6 +21,9 @@ public class FeedService {
     /** Feed键前缀 */
     private static final String FEED_KEY_PREFIX = "user_feed:";
     
+    /** Feed缓存过期时间(分钟) */
+    private static final int FEED_CACHE_EXPIRE_MINUTES = 10;
+    
     /**
      * 将内容推送给用户的feed
      * 使用Redis有序集合存储，以时间戳作为排序分数
@@ -31,6 +34,8 @@ public class FeedService {
     public void pushToFeed(Long userId, Long contentId, double score) {
         String feedKey = FEED_KEY_PREFIX + userId;
         redisTemplate.opsForZSet().add(feedKey, contentId.toString(), score);
+        // 设置过期时间防止内存溢出
+        redisTemplate.expire(feedKey, FEED_CACHE_EXPIRE_MINUTES, TimeUnit.MINUTES);
     }
     
     /**
@@ -45,6 +50,19 @@ public class FeedService {
         String feedKey = FEED_KEY_PREFIX + userId;
         ZSetOperations<String, String> zSetOps = redisTemplate.opsForZSet();
         return zSetOps.reverseRange(feedKey, start, end);
+    }
+    
+    /**
+     * 批量推送内容到多个用户的feed
+     * 用于好友发布内容时推送给所有粉丝
+     * @param userIds 用户ID列表
+     * @param contentId 内容ID
+     * @param score 排序分数
+     */
+    public void batchPushToFeed(Set<Long> userIds, Long contentId, double score) {
+        for (Long userId : userIds) {
+            pushToFeed(userId, contentId, score);
+        }
     }
     
     /**

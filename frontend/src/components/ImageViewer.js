@@ -138,8 +138,27 @@ const ImageViewer = ({ photos, onDelete, onEdit, onCrop }) => {
     return <div className="image-viewer-empty">暂无照片</div>;
   }
 
+  // 批量下载功能
+  const handleBatchDownload = () => {
+    photos.forEach(photo => {
+      const link = document.createElement('a');
+      link.href = photo.url;
+      link.download = `photo-${photo.id}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  };
+
   return (
     <div className="image-viewer">
+      <div className="image-viewer-header">
+        <h3>照片预览</h3>
+        <button onClick={handleBatchDownload} className="batch-download-button">
+          批量下载
+        </button>
+      </div>
+      
       <div className="thumbnails-grid">
         {photos.map((photo, index) => (
           <div key={photo.id} className="thumbnail-wrapper">
@@ -148,6 +167,7 @@ const ImageViewer = ({ photos, onDelete, onEdit, onCrop }) => {
               alt={`照片 ${index + 1}`}
               className="thumbnail"
               onClick={() => openModal(photo, index)}
+              loading="lazy"
             />
             <div className="photo-actions">
               <button 

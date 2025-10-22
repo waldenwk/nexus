@@ -31,4 +31,16 @@ public class MinioConfig {
                 .credentials(accessKey, secretKey)
                 .build();
     }
+    
+    /**
+     * 创建一个用于高并发场景的MinioClient Bean
+     * @return MinioClient实例
+     */
+    @Bean("highConcurrencyMinioClient")
+    public MinioClient highConcurrencyMinioClient() {
+        return MinioClient.builder()
+                .endpoint(endpoint)
+                .credentials(accessKey, secretKey)
+                .build();
+    }
 }
