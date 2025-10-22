@@ -2,6 +2,7 @@ package com.nexus.user.service;
 
 import com.nexus.user.entity.User;
 import com.nexus.user.repository.UserRepository;
+import com.nexus.common.cache.MultilevelCacheable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -28,18 +29,22 @@ public class UserService {
     
     /**
      * 根据ID获取特定用户
+     * 使用多级缓存提升性能
      * @param id 用户ID
      * @return 用户对象，如果不存在则返回null
      */
+    @MultilevelCacheable(cacheName = "users", key = "#id")
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
     
     /**
      * 根据用户名获取用户
+     * 使用多级缓存提升性能
      * @param username 用户名
      * @return 用户信息
      */
+    @MultilevelCacheable(cacheName = "users", key = "#username")
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
@@ -77,5 +82,16 @@ public class UserService {
      */
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+    
+    /**
+     * 根据ID获取用户基本信息和资料
+     * @param id 用户ID
+     * @return 用户对象
+     */
+    public User getUserWithProfile(Long id) {
+        // 这里可以添加获取用户详细资料的逻辑
+        // 比如从user_profiles表中获取详细信息
+        return getUserById(id);
     }
 }

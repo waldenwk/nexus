@@ -160,3 +160,24 @@ CREATE TABLE IF NOT EXISTS event_attendees (
     INDEX idx_event_id (event_id),
     INDEX idx_user_id (user_id)
 );
+
+-- 创建用户资料表
+CREATE TABLE IF NOT EXISTS user_profiles (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    avatar_url VARCHAR(500),
+    bio TEXT,
+    city VARCHAR(100),
+    occupation VARCHAR(100),
+    interests TEXT,
+    birthday TIMESTAMP,
+    gender VARCHAR(20),
+    phone VARCHAR(20),
+    contact_email VARCHAR(100),
+    profile_visibility ENUM('PUBLIC', 'FRIENDS_ONLY', 'PRIVATE') DEFAULT 'PUBLIC',
+    contact_visibility ENUM('PUBLIC', 'FRIENDS_ONLY', 'PRIVATE') DEFAULT 'FRIENDS_ONLY',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uk_user_id (user_id),
+    INDEX idx_user_id (user_id)
+);

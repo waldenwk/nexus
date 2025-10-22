@@ -42,6 +42,12 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 - 系统通知
 - 社交互动通知（点赞、评论等）
 
+### 2.7 隐私与安全
+- 个人资料可见性设置
+- 联系信息隐私设置
+- 内容访问权限控制
+- 好友关系验证
+
 ## 3. 非功能需求
 
 ### 3.1 性能要求
@@ -129,6 +135,23 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 - timestamp: 发送时间
 - is_read: 是否已读
 
+### 5.7 用户资料(UserProfile)
+- id: 用户资料唯一标识
+- user_id: 用户ID
+- avatar_url: 头像URL
+- bio: 个人简介
+- city: 所在城市
+- occupation: 职业
+- interests: 兴趣爱好
+- birthday: 生日
+- gender: 性别
+- phone: 电话号码
+- contact_email: 联系邮箱
+- profile_visibility: 个人资料可见性（public/friends_only/private）
+- contact_visibility: 联系信息可见性（public/friends_only/private）
+- created_at: 创建时间
+- updated_at: 更新时间
+
 ## 6. API接口设计
 
 ### 6.1 认证相关
@@ -138,6 +161,8 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 ### 6.2 用户相关
 - GET /api/users/profile - 获取用户资料
 - PUT /api/users/profile - 更新用户资料
+- GET /api/users/profile/{userId} - 获取指定用户资料（根据隐私设置）
+- PUT /api/users/profile/privacy - 更新用户隐私设置
 
 ### 6.3 内容相关
 - GET /api/posts/timeline - 获取时间线
@@ -222,3 +247,4 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 - 性能优化
 - 安全加固
 - 用户体验改进
+- 隐私功能完善
