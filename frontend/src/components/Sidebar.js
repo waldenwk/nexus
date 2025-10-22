@@ -38,6 +38,12 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
+            <Link to="/album" className="sidebar-link">
+              <span className="icon">🖼️</span>
+              <span className="text">相册</span>
+            </Link>
+          </li>
+          <li>
             <Link to="/settings" className="sidebar-link">
               <span className="icon">⚙️</span>
               <span className="text">设置</span>

@@ -183,6 +183,23 @@ class ApiService {
       }, 1000);
     });
   }
+
+  // 模拟编辑照片
+  static async editPhoto(photoId, editedImage, editParams) {
+    // 模拟API调用
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: {
+            url: editedImage,
+            id: photoId,
+            ...editParams
+          }
+        });
+      }, 800);
+    });
+  }
 }
 
 export default ApiService;

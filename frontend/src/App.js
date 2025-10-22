@@ -10,6 +10,7 @@ import Profile from './pages/Profile';
 import Timeline from './pages/Timeline';
 import Friends from './pages/Friends';
 import Messages from './pages/Messages';
+import Album from './pages/Album';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
               <Route path="/timeline" element={<Timeline />} />
               <Route path="/friends" element={<Friends />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/album" element={<Album />} />
             </Routes>
           </main>
         </div>

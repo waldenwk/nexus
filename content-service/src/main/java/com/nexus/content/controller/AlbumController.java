@@ -80,4 +80,22 @@ public class AlbumController {
         albumService.deletePhoto(photoId);
         return ResponseEntity.ok().build();
     }
+    
+    @PutMapping("/photos/{photoId}")
+    public ResponseEntity<Photo> updatePhoto(@PathVariable Long photoId, @RequestBody Photo photoDetails) {
+        Photo photo = albumService.getPhotoById(photoId);
+        if (photo != null) {
+            photo.setUrl(photoDetails.getUrl());
+            photo.setBrightness(photoDetails.getBrightness());
+            photo.setContrast(photoDetails.getContrast());
+            photo.setSaturation(photoDetails.getSaturation());
+            photo.setRotation(photoDetails.getRotation());
+            photo.setFilter(photoDetails.getFilter());
+            
+            Photo updatedPhoto = albumService.updatePhoto(photo);
+            return ResponseEntity.ok(updatedPhoto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }

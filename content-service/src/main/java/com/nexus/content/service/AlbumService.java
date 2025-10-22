@@ -49,6 +49,14 @@ public class AlbumService {
         return photoRepository.findByAlbumId(albumId);
     }
     
+    public Photo getPhotoById(Long photoId) {
+        return photoRepository.findById(photoId).orElse(null);
+    }
+    
+    public Photo updatePhoto(Photo photo) {
+        return photoRepository.save(photo);
+    }
+    
     public void deletePhoto(Long photoId) {
         photoRepository.deleteById(photoId);
     }

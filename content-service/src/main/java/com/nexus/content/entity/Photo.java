@@ -22,6 +22,22 @@ public class Photo {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
     
+    // 图片编辑参数
+    @Column(name = "brightness")
+    private Integer brightness;
+    
+    @Column(name = "contrast")
+    private Integer contrast;
+    
+    @Column(name = "saturation")
+    private Integer saturation;
+    
+    @Column(name = "rotation")
+    private Integer rotation;
+    
+    @Column(name = "filter")
+    private String filter;
+    
     // Constructors
     public Photo() {}
     
@@ -71,5 +87,45 @@ public class Photo {
     
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
+    }
+    
+    public Integer getBrightness() {
+        return brightness;
+    }
+    
+    public void setBrightness(Integer brightness) {
+        this.brightness = brightness;
+    }
+    
+    public Integer getContrast() {
+        return contrast;
+    }
+    
+    public void setContrast(Integer contrast) {
+        this.contrast = contrast;
+    }
+    
+    public Integer getSaturation() {
+        return saturation;
+    }
+    
+    public void setSaturation(Integer saturation) {
+        this.saturation = saturation;
+    }
+    
+    public Integer getRotation() {
+        return rotation;
+    }
+    
+    public void setRotation(Integer rotation) {
+        this.rotation = rotation;
+    }
+    
+    public String getFilter() {
+        return filter;
+    }
+    
+    public void setFilter(String filter) {
+        this.filter = filter;
     }
 }
