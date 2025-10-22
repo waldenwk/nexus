@@ -1,0 +1,46 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: common-service
+    
+  redis:
+    host: localhost
+    port: 6379
+    timeout: 2000ms
+    
+  datasource:
+    url: jdbc:mysql://localhost:3306/nexus?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: nexus
+    password: nexus123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+# Seata配置
+seata:
+  enabled: true
+  application-id: ${spring.application.name}
+  tx-service-group: nexus-tx-group
+  enable-auto-data-source-proxy: true
+  service:
+    vgroup-mapping:
+      nexus-tx-group: default
+    grouplist:
+      default: 127.0.0.1:8091
+  config:
+    type: file
+  registry:
+    type: eureka
+    eureka:
+      server-addr: http://localhost:8761/eureka
+      weight: 1
+
+# JWT配置
+jwt:
+  secret: nexus_secret_key
+  expiration: 86400  # 24小时
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
