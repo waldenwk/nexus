@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Table(name = "photos")
 public class Photo {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     @Column(name = "album_id", nullable = false)
@@ -54,7 +54,8 @@ public class Photo {
     // Constructors
     public Photo() {}
     
-    public Photo(Long albumId, Long userId, String url) {
+    public Photo(Long id, Long albumId, Long userId, String url) {
+        this.id = id;
         this.albumId = albumId;
         this.userId = userId;
         this.url = url;

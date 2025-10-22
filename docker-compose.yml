@@ -79,6 +79,39 @@ services:
     depends_on:
       - elasticsearch
 
+  # Seata分布式事务服务
+  seata:
+    # 使用的镜像及版本
+    image: seataio/seata-server:1.5.2
+    # 容器名称
+    container_name: nexus-seata
+    # 端口映射
+    ports:
+      - "8091:8091"
+      - "7091:7091"
+    # 环境变量配置
+    environment:
+      # Seata应用ID
+      SEATA_APPLICATION_ID: seata-server
+      # Seata事务组
+      SEATA_TX_SERVICE_GROUP: nexus-tx-group
+      # Seata配置类型
+      SEATA_CONFIG_TYPE: file
+      # Seata注册中心类型
+      SEATA_REGISTRY_TYPE: eureka
+      # Eureka服务器地址
+      SEATA_REGISTRY_EUREKA_SERVICE_URL: http://nexus-eureka-server:8761/eureka
+    # 依赖关系，确保eureka-server服务先启动
+    depends_on:
+      - eureka-server
+    # 数据卷挂载
+    volumes:
+      # 挂载Seata配置文件
+      - ./seata:/seata-server/resources
+    # 网络配置
+    networks:
+      - nexus-network
+
 # 定义数据卷
 volumes:
   # MySQL数据卷
@@ -87,3 +120,10 @@ volumes:
   redis_data:
   # Elasticsearch数据卷
   elasticsearch_data:
+
+# 定义网络
+networks:
+  # Nexus网络
+  nexus-network:
+    # 网络驱动
+    driver: bridge

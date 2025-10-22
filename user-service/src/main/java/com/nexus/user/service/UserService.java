@@ -36,6 +36,33 @@ public class UserService {
     }
     
     /**
+     * 根据用户名获取用户
+     * @param username 用户名
+     * @return 用户信息
+     */
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+    
+    /**
+     * 创建用户
+     * @param user 用户对象
+     * @return 创建后的用户对象
+     */
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
+    
+    /**
+     * 更新用户
+     * @param user 用户对象
+     * @return 更新后的用户对象
+     */
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+    
+    /**
      * 保存用户（创建或更新）
      * @param user 用户对象
      * @return 保存后的用户对象

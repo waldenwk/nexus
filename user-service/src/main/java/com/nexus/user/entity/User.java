@@ -12,12 +12,16 @@ import java.time.LocalDateTime;
 public class User {
     /** 用户唯一标识符 */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
     
     /** 用户名，唯一且不能为空 */
     @Column(nullable = false, unique = true)
     private String username;
+    
+    /** 用户密码 */
+    @Column(nullable = false)
+    private String password;
     
     /** 用户真实姓名，不能为空 */
     @Column(name = "real_name", nullable = false)
@@ -42,8 +46,10 @@ public class User {
     // Constructors
     public User() {}
     
-    public User(String username, String realName, String school, Integer enrollmentYear) {
+    public User(Long id, String username, String password, String realName, String school, Integer enrollmentYear) {
+        this.id = id;
         this.username = username;
+        this.password = password;
         this.realName = realName;
         this.school = school;
         this.enrollmentYear = enrollmentYear;
@@ -66,6 +72,14 @@ public class User {
     
     public void setUsername(String username) {
         this.username = username;
+    }
+    
+    public String getPassword() {
+        return password;
+    }
+    
+    public void setPassword(String password) {
+        this.password = password;
     }
     
     public String getRealName() {

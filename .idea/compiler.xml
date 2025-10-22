@@ -6,18 +6,19 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="group-service" />
-        <module name="auth-service" />
-        <module name="content-service" />
-        <module name="event-service" />
-        <module name="feed-service" />
-        <module name="search-service" />
-        <module name="api-gateway" />
         <module name="user-service" />
         <module name="eureka-server" />
         <module name="file-service" />
         <module name="message-service" />
         <module name="recommendation-service" />
+        <module name="group-service" />
+        <module name="auth-service" />
+        <module name="common" />
+        <module name="content-service" />
+        <module name="event-service" />
+        <module name="feed-service" />
+        <module name="search-service" />
+        <module name="api-gateway" />
       </profile>
     </annotationProcessing>
   </component>
