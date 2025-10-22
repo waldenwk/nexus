@@ -6,12 +6,12 @@ spring:
     name: common-service
     
   redis:
-    host: localhost
+    host: nexus-redis
     port: 6379
     timeout: 2000ms
     
   datasource:
-    url: jdbc:mysql://localhost:3306/nexus?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    url: jdbc:mysql://nexus-mysql:3306/nexus?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
     username: nexus
     password: nexus123
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -26,13 +26,13 @@ seata:
     vgroup-mapping:
       nexus-tx-group: default
     grouplist:
-      default: 127.0.0.1:8091
+      default: nexus-seata:8091
   config:
     type: file
   registry:
     type: eureka
     eureka:
-      server-addr: http://localhost:8761/eureka
+      server-addr: http://nexus-eureka-server:8761/eureka
       weight: 1
 
 # JWT配置
@@ -43,4 +43,4 @@ jwt:
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://nexus-eureka-server:8761/eureka/
