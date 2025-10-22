@@ -84,7 +84,8 @@ public class UserController {
             String token = jwtUtil.generateToken(authenticatedUser);
             
             // 创建分布式Session
-            String sessionId = idGenerator.nextId().toString();
+            Long sessionIdLong = idGenerator.nextId();
+            String sessionId = sessionIdLong.toString();
             sessionManager.createSession(sessionId, authenticatedUser.getId(), authenticatedUser);
             
             // 设置Cookie
