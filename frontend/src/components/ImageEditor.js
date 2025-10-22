@@ -87,7 +87,15 @@ const ImageEditor = ({ src, onComplete, onCancel }) => {
     const canvas = canvasRef.current;
     try {
       const editedImageUrl = canvas.toDataURL('image/jpeg');
-      onComplete(editedImageUrl);
+      // 收集编辑参数
+      const editParams = {
+        brightness,
+        contrast,
+        saturation,
+        rotation,
+        filter
+      };
+      onComplete(editedImageUrl, editParams);
     } catch (e) {
       console.error('保存编辑图片时出错:', e);
       onComplete(src); // 出错时使用原图
