@@ -16,6 +16,7 @@ services:
     volumes:
       # Prometheus配置文件挂载
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/alerts.yml:/etc/prometheus/alerts.yml
     # 启动命令参数
     command:
       # 配置文件路径
@@ -37,12 +38,17 @@ services:
     volumes:
       # Grafana数据源配置文件挂载
       - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
     # 依赖关系，确保prometheus服务先启动
     depends_on:
       - prometheus
     # 网络配置
     networks:
       - nexus-network
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
 
 # 定义网络
 networks:

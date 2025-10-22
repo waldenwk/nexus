@@ -115,10 +115,54 @@ docker-compose -f docker-compose-monitoring.yml up -d
 ## 7. 监控和日志
 
 ### 7.1 Prometheus 监控
-Prometheus 会自动抓取所有带有 `/actuator/prometheus` 端点的 Spring Boot 服务的指标。
+Prometheus 会自动抓取所有带有 `/actuator/prometheus` 端点的 Spring Boot 服务的指标。同时配置了丰富的告警规则，包括服务可用性、CPU/内存使用率、GC频率、HTTP错误率等关键指标监控。Prometheus还监控基础设施组件如MySQL和Redis的性能和可用性。
 
 ### 7.2 Grafana 可视化
-Grafana 预配置了 Prometheus 数据源，可以通过导入 Spring Boot 相关的 Dashboard 模板来监控应用。
+Grafana 预配置了 Prometheus 数据源和预定义仪表板，包括Spring Boot统计信息和HTTP统计信息仪表板，提供开箱即用的监控体验。用户可以通过这些仪表板实时查看系统性能和健康状况。
+
+### 7.3 监控指标
+系统提供以下监控指标：
+
+1. **JVM性能指标**
+   - 内存使用情况（堆内存、非堆内存、各代内存）
+   - GC活动（GC次数、GC时间）
+   - 线程状态（活跃线程数、守护线程数等）
+   - 类加载信息
+
+2. **HTTP请求指标**
+   - 请求速率和吞吐量
+   - 响应时间分布
+   - HTTP状态码统计
+   - 错误率监控
+
+3. **数据库指标**
+   - 连接池状态（活跃连接数、等待连接数）
+   - 查询性能统计
+   - 连接使用率
+
+4. **Kafka指标**
+   - 消息生产消费速率
+   - 消费者组延迟
+   - 主题消息积压情况
+
+5. **业务指标**
+   - 各服务核心业务执行情况
+   - 用户活动统计
+   - 系统负载指标
+
+### 7.4 告警规则
+系统预配置了以下告警规则：
+
+1. **服务可用性告警**：服务实例宕机时触发
+2. **资源使用率告警**：CPU、内存使用率过高时触发
+3. **性能告警**：GC频率过高、HTTP错误率过高时触发
+4. **组件状态告警**：数据库连接池使用率过高、Kafka消息积压时触发
+
+### 7.5 自定义监控
+用户可以根据需要：
+1. 在Prometheus中添加自定义查询规则
+2. 在Grafana中创建自定义仪表板
+3. 添加新的告警规则以满足特定需求
 
 ### 7.3 日志查看
 使用以下命令查看特定服务的日志：
@@ -174,7 +218,7 @@ docker run --rm -v mysql_data:/data -v $(pwd):/backup alpine tar czf /backup/mys
 ```
 
 ### 10.2 数据恢复
-```bash
+```
 docker run --rm -v mysql_data:/data -v $(pwd):/backup alpine tar xzf /backup/mysql-backup.tar.gz -C /data
 ```
 

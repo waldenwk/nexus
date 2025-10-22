@@ -78,6 +78,34 @@ services:
     # 依赖关系，确保elasticsearch服务先启动
     depends_on:
       - elasticsearch
+    # 环境变量配置
+    environment:
+      # Elasticsearch服务器地址
+      ELASTICSEARCH_HOSTS: http://nexus-elasticsearch:9200
+
+  # Logstash日志处理服务
+  logstash:
+    # 使用的镜像及版本
+    image: docker.elastic.co/logstash/logstash:7.17.0
+    # 容器名称
+    container_name: nexus-logstash
+    # 端口映射
+    ports:
+      - "5044:5044"
+      - "9600:9600"
+    # 数据卷挂载
+    volumes:
+      # Logstash配置文件
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+      # Logstash管道配置
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    # 依赖关系，确保elasticsearch服务先启动
+    depends_on:
+      - elasticsearch
+    # 环境变量配置
+    environment:
+      # Logstash配置
+      LS_JAVA_OPTS: "-Xmx512m -Xms512m"
 
   # Seata分布式事务服务
   seata:

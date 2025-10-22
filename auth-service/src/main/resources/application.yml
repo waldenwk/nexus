@@ -46,5 +46,9 @@ management:
   endpoints:
     web:
       exposure:
-        # 暴露的端点
-        include: health,info
+        # 暴露的端点，包括健康检查、基本信息和Prometheus监控
+        include: health,info,prometheus
+  # 监控指标配置
+  metrics:
+    tags:
+      application: ${spring.application.name}
