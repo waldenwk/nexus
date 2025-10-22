@@ -1,0 +1,706 @@
+version: '3.8'
+
+services:
+  # MySQL数据库
+  mysql:
+    # 镜像名称和版本
+    image: mysql:8.0
+    # 容器名称
+    container_name: nexus-mysql
+    # 端口映射
+    ports:
+      - "3306:3306"
+    # 环境变量配置
+    environment:
+      # MySQL root用户密码
+      MYSQL_ROOT_PASSWORD: root123
+      # 数据库名称
+      MYSQL_DATABASE: nexus
+      # 普通用户名称
+      MYSQL_USER: nexus
+      # 普通用户密码
+      MYSQL_PASSWORD: nexus123
+    # 健康检查配置
+    healthcheck:
+      # 健康检查命令
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      # 检查间隔
+      interval: 10s
+      # 超时时间
+      timeout: 5s
+      # 重试次数
+      retries: 3
+    # 数据卷挂载
+    volumes:
+      # 挂载MySQL数据目录
+      - mysql_data:/var/lib/mysql
+      # 挂载初始化SQL脚本
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Redis缓存
+  redis:
+    # 镜像名称和版本
+    image: redis:7.0
+    # 容器名称
+    container_name: nexus-redis
+    # 端口映射
+    ports:
+      - "6379:6379"
+    # 健康检查配置
+    healthcheck:
+      # 健康检查命令
+      test: ["CMD", "redis-cli", "ping"]
+      # 检查间隔
+      interval: 10s
+      # 超时时间
+      timeout: 3s
+      # 重试次数
+      retries: 3
+    # 数据卷挂载
+    volumes:
+      # 挂载Redis数据目录
+      - redis_data:/data
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Elasticsearch搜索引擎
+  elasticsearch:
+    # 镜像名称和版本
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.3
+    # 容器名称
+    container_name: nexus-elasticsearch
+    # 端口映射
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    # 环境变量配置
+    environment:
+      # 集群名称
+      cluster.name: nexus-elasticsearch
+      # 单节点发现
+      discovery.type: single-node
+      # JVM堆内存大小
+      ES_JAVA_OPTS: -Xms1g -Xmx1g
+    # 健康检查配置
+    healthcheck:
+      # 健康检查命令
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      # 检查间隔
+      interval: 30s
+      # 超时时间
+      timeout: 10s
+      # 重试次数
+      retries: 5
+    # 数据卷挂载
+    volumes:
+      # 挂载Elasticsearch数据目录
+      - elasticsearch_data:/usr/share/elasticsearch/data
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Kibana日志分析平台
+  kibana:
+    # 镜像名称和版本
+    image: docker.elastic.co/kibana/kibana:7.17.3
+    # 容器名称
+    container_name: nexus-kibana
+    # 端口映射
+    ports:
+      - "5601:5601"
+    # 环境变量配置
+    environment:
+      # Elasticsearch服务器地址
+      ELASTICSEARCH_HOSTS: http://nexus-elasticsearch:9200
+    # 依赖关系，等待elasticsearch服务就绪
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # MinIO对象存储
+  minio:
+    # 镜像名称和版本
+    image: minio/minio:RELEASE.2023-05-04T21-44-30Z
+    # 容器名称
+    container_name: nexus-minio
+    # 端口映射
+    ports:
+      # API端口
+      - "9000:9000"
+      # 控制台端口
+      - "9001:9001"
+    # 环境变量配置
+    environment:
+      # 访问密钥
+      MINIO_ACCESS_KEY: minioadmin
+      # 秘密密钥
+      MINIO_SECRET_KEY: minioadmin123
+    # 命令行参数
+    command: server /data --console-address ":9001"
+    # 健康检查配置
+    healthcheck:
+      # 健康检查命令
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      # 检查间隔
+      interval: 30s
+      # 超时时间
+      timeout: 20s
+      # 重试次数
+      retries: 3
+    # 数据卷挂载
+    volumes:
+      # 挂载MinIO数据目录
+      - ./minio/data:/data
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Kafka消息队列
+  kafka:
+    # 镜像名称和版本
+    image: bitnami/kafka:3.4.0
+    # 容器名称
+    container_name: nexus-kafka
+    # 端口映射
+    ports:
+      - "9092:9092"
+    # 环境变量配置
+    environment:
+      # Kafka监听地址
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092
+      # 广告监听地址
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      # Zookeeper连接地址
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper:2181
+      # 自动创建主题
+      KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE: true
+      # 默认分区数
+      KAFKA_CFG_NUM_PARTITIONS: 3
+    # 依赖关系，等待zookeeper服务就绪
+    depends_on:
+      zookeeper:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Zookeeper（Kafka依赖）
+  zookeeper:
+    # 镜像名称和版本
+    image: bitnami/zookeeper:3.8.0
+    # 容器名称
+    container_name: nexus-zookeeper
+    # 端口映射
+    ports:
+      - "2181:2181"
+    # 环境变量配置
+    environment:
+      # 允许匿名连接
+      ZOO_ENABLE_ADMIN_SERVER: "no"
+    # 健康检查配置
+    healthcheck:
+      # 健康检查命令
+      test: ["CMD", "zkServer.sh", "status"]
+      # 检查间隔
+      interval: 10s
+      # 超时时间
+      timeout: 5s
+      # 重试次数
+      retries: 3
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Eureka服务注册中心
+  eureka-server:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./eureka-server
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-eureka-server
+    # 端口映射
+    ports:
+      - "8761:8761"
+    # 健康检查配置
+    healthcheck:
+      # 健康检查命令
+      test: ["CMD", "curl", "-f", "http://localhost:8761/actuator/health"]
+      # 检查间隔
+      interval: 10s
+      # 超时时间
+      timeout: 5s
+      # 重试次数
+      retries: 3
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # API网关
+  api-gateway:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./api-gateway
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-api-gateway
+    # 端口映射
+    ports:
+      - "8080:8080"
+    # 依赖关系，等待eureka-server服务就绪
+    depends_on:
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+
+  # 认证服务
+  auth-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./auth-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-auth-service
+    # 端口映射
+    ports:
+      - "8089:8089"
+    # 依赖关系，等待mysql和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+
+  # 用户服务
+  user-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./user-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-user-service
+    # 端口映射
+    ports:
+      - "8081:8081"
+    # 依赖关系，等待mysql、redis和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+      # Redis主机地址
+      - REDIS_HOST=redis
+      # Redis端口
+      - REDIS_PORT=6379
+
+  # 内容服务
+  content-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./content-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-content-service
+    # 端口映射
+    ports:
+      - "8082:8082"
+    # 依赖关系，等待mysql、redis和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+      # Redis主机地址
+      - REDIS_HOST=redis
+      # Redis端口
+      - REDIS_PORT=6379
+
+  # 消息服务
+  message-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./message-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-message-service
+    # 端口映射
+    ports:
+      - "8083:8083"
+    # 依赖关系，等待mysql、kafka和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+      # Kafka主机地址
+      - KAFKA_HOST=nexus-kafka
+      # Kafka端口
+      - KAFKA_PORT=9092
+
+  # 信息流服务
+  feed-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./feed-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-feed-service
+    # 端口映射
+    ports:
+      - "8084:8084"
+    # 依赖关系，等待mysql、redis和eureka-server服务就绪
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+      # Redis主机地址
+      - REDIS_HOST=redis
+      # Redis端口
+      - REDIS_PORT=6379
+
+  # 群组服务
+  group-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./group-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-group-service
+    # 端口映射
+    ports:
+      - "8085:8085"
+    # 依赖关系，等待mysql和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+
+  # 活动服务
+  event-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./event-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-event-service
+    # 端口映射
+    ports:
+      - "8086:8086"
+    # 依赖关系，等待mysql和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+
+  # 搜索服务
+  search-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./search-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-search-service
+    # 端口映射
+    ports:
+      - "8087:8087"
+    # 依赖关系，等待elasticsearch和eureka-server服务就绪
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # Elasticsearch主机地址
+      - ES_HOST=nexus-elasticsearch
+      # Elasticsearch端口
+      - ES_PORT=9200
+
+  # 文件服务
+  file-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./file-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-file-service
+    # 端口映射
+    ports:
+      - "8088:8088"
+    # 依赖关系，等待minio和eureka-server服务就绪
+    depends_on:
+      minio:
+        condition: service_healthy
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # MinIO服务器地址
+      - MINIO_ENDPOINT=http://nexus-minio:9000
+      # MinIO访问密钥
+      - MINIO_ACCESS_KEY=minioadmin
+      # MinIO秘密密钥
+      - MINIO_SECRET_KEY=minioadmin123
+      # MinIO存储桶名称
+      - MINIO_BUCKET=nexus-files
+
+  # 推荐服务
+  recommendation-service:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./recommendation-service
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-recommendation-service
+    # 端口映射
+    ports:
+      - "8090:8090"
+    # 依赖关系，等待mysql、redis、kafka和eureka-server服务健康检查通过
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_started
+      eureka-server:
+        condition: service_healthy
+    # 网络配置
+    networks:
+      - nexus-network
+    # 环境变量配置
+    environment:
+      # Eureka服务注册中心地址
+      - EUREKA_SERVER_URL=http://nexus-eureka-server:8761/eureka
+      # 数据库主机地址
+      - DB_HOST=mysql
+      # 数据库端口
+      - DB_PORT=3306
+      # 数据库名称
+      - DB_NAME=nexus
+      # 数据库用户名
+      - DB_USER=nexus
+      # 数据库密码
+      - DB_PASSWORD=nexus123
+      # Redis主机地址
+      - REDIS_HOST=redis
+      # Redis端口
+      - REDIS_PORT=6379
+      # Kafka主机地址
+      - KAFKA_HOST=nexus-kafka
+      # Kafka端口
+      - KAFKA_PORT=9092
+
+  # 前端应用
+  frontend:
+    # 构建配置
+    build: 
+      # 构建上下文路径
+      context: ./frontend
+      # Dockerfile文件名
+      dockerfile: Dockerfile
+    # 容器名称
+    container_name: nexus-frontend
+    # 端口映射
+    ports:
+      - "80:80"
+    # 依赖关系，等待api-gateway服务就绪
+    depends_on:
+      api-gateway:
+        condition: service_started
+    # 网络配置
+    networks:
+      - nexus-network
+
+# 定义网络
+networks:
+  # Nexus网络
+  nexus-network:
+    # 网络驱动
+    driver: bridge
+
+# 定义数据卷
+volumes:
+  # MySQL数据卷
+  mysql_data:
+  # Redis数据卷
+  redis_data:
+  # Elasticsearch数据卷
+  elasticsearch_data:

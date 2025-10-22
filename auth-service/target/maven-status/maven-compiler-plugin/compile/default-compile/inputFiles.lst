@@ -1,0 +1,14 @@
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/AuthServiceApplication.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/config/SecurityConfig.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/controller/AuthController.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/entity/User.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/payload/ApiResponse.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/payload/JwtAuthenticationResponse.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/payload/LoginRequest.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/payload/SignUpRequest.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/repository/UserRepository.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/security/CustomUserDetailsService.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/security/JwtAuthenticationEntryPoint.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/security/JwtAuthenticationFilter.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/security/JwtTokenProvider.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/auth-service/src/main/java/com/nexus/auth/security/UserPrincipal.java

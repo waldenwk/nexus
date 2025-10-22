@@ -1,0 +1,50 @@
+# 认证服务端口配置
+server:
+  port: 8089
+
+# Spring应用配置
+spring:
+  application:
+    # 应用名称
+    name: auth-service
+  # 数据库连接配置
+  datasource:
+    # 数据库连接URL
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:nexus}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    # 数据库用户名
+    username: ${DB_USER:root}
+    # 数据库密码
+    password: ${DB_PASSWORD:root}
+    # 数据库驱动类
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # JPA配置
+  jpa:
+    hibernate:
+      # Hibernate DDL策略
+      ddl-auto: update
+    # 是否显示SQL语句
+    show-sql: true
+    # 数据库方言
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    
+# 应用自定义配置
+app:
+  # JWT密钥
+  jwtSecret: nexusSecretKey
+  # JWT过期时间（毫秒），默认7天
+  jwtExpirationInMs: 604800000
+
+# Eureka客户端配置
+eureka:
+  client:
+    service-url:
+      # Eureka服务注册中心地址
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      
+# Spring Boot Actuator管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露的端点
+        include: health,info

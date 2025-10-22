@@ -1,0 +1,89 @@
+# Docker Compose版本声明
+version: '3.8'
+
+# 定义服务
+services:
+  # MySQL数据库服务
+  mysql:
+    # 使用的镜像及版本
+    image: mysql:8.0
+    # 容器名称
+    container_name: nexus-mysql
+    # 环境变量配置
+    environment:
+      # MySQL root用户密码
+      MYSQL_ROOT_PASSWORD: root
+      # 创建的数据库名称
+      MYSQL_DATABASE: nexus
+      # 创建的普通用户名
+      MYSQL_USER: nexus
+      # 普通用户密码
+      MYSQL_PASSWORD: nexus123
+    # 端口映射（主机端口:容器端口）
+    ports:
+      - "3306:3306"
+    # 数据卷挂载
+    volumes:
+      # 持久化MySQL数据
+      - mysql_data:/var/lib/mysql
+      # 数据库初始化脚本目录挂载
+      - ./mysql/init:/docker-entrypoint-initdb.d
+    # MySQL启动命令参数
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Redis缓存服务
+  redis:
+    # 使用的镜像及版本
+    image: redis:latest
+    # 容器名称
+    container_name: nexus-redis
+    # 端口映射
+    ports:
+      - "6379:6379"
+    # 数据卷挂载，持久化Redis数据
+    volumes:
+      - redis_data:/data
+
+  # Elasticsearch搜索引擎服务
+  elasticsearch:
+    # 使用的镜像及版本
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    # 容器名称
+    container_name: nexus-elasticsearch
+    # 环境变量配置
+    environment:
+      # 单节点发现模式
+      - discovery.type=single-node
+      # JVM堆内存设置（最小512MB，最大512MB）
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    # 端口映射
+    ports:
+      # HTTP端口
+      - "9200:9200"
+      # TCP端口
+      - "9300:9300"
+    # 数据卷挂载，持久化Elasticsearch数据
+    volumes:
+      - elasticsearch_data:/usr/share/elasticsearch/data
+
+  # Kibana日志可视化服务
+  kibana:
+    # 使用的镜像及版本
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    # 容器名称
+    container_name: nexus-kibana
+    # 端口映射
+    ports:
+      - "5601:5601"
+    # 依赖关系，确保elasticsearch服务先启动
+    depends_on:
+      - elasticsearch
+
+# 定义数据卷
+volumes:
+  # MySQL数据卷
+  mysql_data:
+  # Redis数据卷
+  redis_data:
+  # Elasticsearch数据卷
+  elasticsearch_data:

@@ -1,0 +1,42 @@
+# 文件服务端口配置
+server:
+  port: 8088
+
+# Spring应用配置
+spring:
+  application:
+    # 应用名称
+    name: file-service
+  # Servlet多部分文件上传配置
+  servlet:
+    multipart:
+      # 最大文件大小
+      max-file-size: 10MB
+      # 最大请求大小
+      max-request-size: 10MB
+    
+# Eureka客户端配置
+eureka:
+  client:
+    service-url:
+      # Eureka服务注册中心地址
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      
+# MinIO配置
+minio:
+  # MinIO服务器地址
+  endpoint: ${MINIO_ENDPOINT:http://localhost:9000}
+  # 访问密钥
+  access-key: ${MINIO_ACCESS_KEY:minioadmin}
+  # 秘密密钥
+  secret-key: ${MINIO_SECRET_KEY:minioadmin}
+  # 默认存储桶名称
+  bucket: ${MINIO_BUCKET:nexus-files}
+  
+# Spring Boot Actuator管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露的端点
+        include: health,info

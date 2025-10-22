@@ -1,0 +1,52 @@
+# Docker Compose版本声明
+version: '3.8'
+
+# 定义服务
+services:
+  # Prometheus监控服务
+  prometheus:
+    # 使用的镜像及版本
+    image: prom/prometheus:latest
+    # 容器名称
+    container_name: nexus-prometheus
+    # 端口映射（主机端口:容器端口）
+    ports:
+      - "9090:9090"
+    # 数据卷挂载
+    volumes:
+      # Prometheus配置文件挂载
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    # 启动命令参数
+    command:
+      # 配置文件路径
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    # 网络配置
+    networks:
+      - nexus-network
+
+  # Grafana可视化服务
+  grafana:
+    # 使用的镜像及版本
+    image: grafana/grafana:latest
+    # 容器名称
+    container_name: nexus-grafana
+    # 端口映射
+    ports:
+      - "3000:3000"
+    # 数据卷挂载
+    volumes:
+      # Grafana数据源配置文件挂载
+      - ./grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    # 依赖关系，确保prometheus服务先启动
+    depends_on:
+      - prometheus
+    # 网络配置
+    networks:
+      - nexus-network
+
+# 定义网络
+networks:
+  # Nexus网络
+  nexus-network:
+    # 网络驱动
+    driver: bridge
