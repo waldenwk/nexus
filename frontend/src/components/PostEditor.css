@@ -1,0 +1,22 @@
+.post-editor {
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.post-editor .rdw-editor-wrapper {
+  box-sizing: border-box;
+}
+
+.post-editor .rdw-editor-toolbar {
+  border: none;
+  border-bottom: 1px solid #ddd;
+  border-radius: 4px 4px 0 0;
+  padding: 6px;
+}
+
+.post-editor .rdw-editor-main {
+  min-height: 100px;
+  padding: 10px;
+  cursor: text;
+}

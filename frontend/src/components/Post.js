@@ -13,7 +13,7 @@ const Post = ({ post }) => {
       </div>
       
       <div className="post-content">
-        <p>{post.content}</p>
+        <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </div>
       
       <div className="post-actions">

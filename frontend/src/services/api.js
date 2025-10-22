@@ -95,6 +95,7 @@ class ApiService {
   // 模拟发布帖子
   static async createPost(content) {
     // 模拟API调用
+    // content参数现在可以包含HTML格式的富文本内容
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
@@ -103,7 +104,7 @@ class ApiService {
             id: Date.now(),
             username: '我',
             avatar: 'https://via.placeholder.com/40',
-            content: content,
+            content: content, // 富文本内容直接存储
             timestamp: '刚刚',
             likes: 0,
             comments: 0
@@ -146,6 +147,40 @@ class ApiService {
           ]
         });
       }, 500);
+    });
+  }
+
+  // 模拟创建相册
+  static async createAlbum(name, description) {
+    // 模拟API调用
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: {
+            id: Date.now(),
+            name: name,
+            description: description,
+            createdAt: new Date().toISOString()
+          }
+        });
+      }, 500);
+    });
+  }
+
+  // 模拟上传照片
+  static async uploadPhoto(file) {
+    // 模拟API调用
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          data: {
+            url: 'https://via.placeholder.com/600x400?text=' + encodeURIComponent(file.name),
+            id: Date.now()
+          }
+        });
+      }, 1000);
     });
   }
 }

@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ApiService from '../services/api';
 import Post from '../components/Post';
+import PostEditor from '../components/PostEditor';
 import './Timeline.css';
 
 const Timeline = () => {
   const [posts, setPosts] = useState([]);
   const [newPost, setNewPost] = useState('');
+  const [editorState, setEditorState] = useState(null);
   const [loading, setLoading] = useState(true);
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState('');
@@ -28,6 +30,11 @@ const Timeline = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handlePostContentChange = (content, editorState) => {
+    setNewPost(content);
+    setEditorState(editorState);
   };
 
   const handlePostSubmit = async (e) => {
@@ -63,12 +70,10 @@ const Timeline = () => {
       <div className="post-form-container">
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={handlePostSubmit} className="post-form">
-          <textarea
-            value={newPost}
-            onChange={(e) => setNewPost(e.target.value)}
+          <PostEditor
+            initialValue={newPost}
+            onChange={handlePostContentChange}
             placeholder="分享你的新鲜事..."
-            className="post-input"
-            disabled={posting}
           />
           <button type="submit" className="post-button" disabled={posting}>
             {posting ? '发布中...' : '发布'}

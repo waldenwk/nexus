@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 /**
  * 内容实体类，映射数据库中的posts表
  * 用于存储用户发布的各种类型的内容，如状态、日志、相册等
+ * 支持富文本格式的内容存储
  */
 @Entity
 @Table(name = "posts")
@@ -19,7 +20,10 @@ public class Post {
     @Column(name = "user_id", nullable = false)
     private Long userId;
     
-    /** 内容文本，使用TEXT类型存储较长文本 */
+    /** 
+     * 内容文本，使用TEXT类型存储较长文本
+     * 支持HTML格式的富文本内容
+     */
     @Column(columnDefinition = "TEXT")
     private String content;
     

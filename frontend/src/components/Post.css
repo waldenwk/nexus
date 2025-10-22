@@ -29,10 +29,34 @@
   font-size: 0.9rem;
 }
 
-.post-content p {
+.post-content {
   color: #333;
   line-height: 1.5;
   margin: 0 0 1rem 0;
+  word-wrap: break-word;
+}
+
+.post-content p {
+  margin: 0 0 0.5rem 0;
+}
+
+.post-content h1,
+.post-content h2,
+.post-content h3 {
+  margin: 0.5rem 0;
+}
+
+.post-content ul,
+.post-content ol {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.post-content blockquote {
+  border-left: 4px solid #ddd;
+  padding-left: 1rem;
+  margin: 0.5rem 0;
+  color: #666;
 }
 
 .post-actions {
