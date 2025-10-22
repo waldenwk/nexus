@@ -8,6 +8,8 @@ Nexus 是一个基于微服务架构的校园社交网络平台，使用 Docker 
 2. `docker-compose-services.yml` - 核心微服务（用户、内容、消息等服务）
 3. `monitoring/docker-compose-monitoring.yml` - 监控服务（Prometheus、Grafana）
 
+关于Kafka和MinIO的详细集成信息，请参考[Kafka和MinIO集成部署文档](DEPLOYMENT_KAFKA_MINIO.md)。
+
 ## 2. 部署架构
 
 ### 2.1 基础设施层
@@ -142,6 +144,8 @@ docker-compose logs -f <service-name>
 3. 确认配置文件中的服务地址是否正确
 
 ### 8.4 Kafka 和 MinIO 相关问题
+详细信息请参考[Kafka和MinIO集成部署文档](DEPLOYMENT_KAFKA_MINIO.md)。
+
 1. 检查 Kafka 和 ZooKeeper 是否正常运行
 2. 验证 MinIO 是否正常启动并能访问控制台
 3. 确认相关服务的环境变量配置是否正确

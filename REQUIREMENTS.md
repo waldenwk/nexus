@@ -67,27 +67,7 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 
 ## 4. 技术栈
 
-### 4.1 前端
-- React框架
-- HTML5、CSS3、JavaScript ES6+
-- React Router用于路由管理
-- Axios用于HTTP请求
-- React Image Crop用于图片裁剪
-
-### 4.2 后端
-- Java 11+
-- Spring Boot微服务框架
-- Spring Security安全框架
-- Spring Data JPA持久层框架
-- MySQL数据库
-- Redis缓存
-- RabbitMQ消息队列
-
-### 4.3 DevOps
-- Docker容器化部署
-- Docker Compose多容器编排
-- Nginx反向代理
-- Jenkins持续集成/持续部署
+详细技术栈信息请参考[架构文档](ARCHITECTURE.md)。
 
 ## 5. 数据模型
 
@@ -182,6 +162,8 @@ Nexus是一个现代化的社交网络平台，旨在为用户提供安全、便
 - POST /api/messages - 发送消息
 
 ## 7. 部署架构
+
+详细部署架构信息请参考[部署文档](DEPLOYMENT.md)。
 
 ### 7.1 服务组成
 - API网关：统一入口，负责路由和负载均衡

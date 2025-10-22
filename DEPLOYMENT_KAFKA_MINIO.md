@@ -8,7 +8,7 @@
 
 ### 1.1 添加Kafka依赖
 
-在[message-service](file:///Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message)的`pom.xml`中添加了以下依赖：
+在message-service的`pom.xml`中添加了以下依赖：
 
 ```xml
 <dependency>
@@ -19,7 +19,7 @@
 
 ### 1.2 Kafka配置
 
-在[message-service](file:///Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message)的`application.yml`中添加了Kafka配置：
+在message-service的`application.yml`中添加了Kafka配置：
 
 ```yaml
 spring:
@@ -65,7 +65,7 @@ spring:
 
 ### 2.1 添加MinIO依赖
 
-在[file-service](file:///Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file)的`pom.xml`中添加了以下依赖：
+在file-service的`pom.xml`中添加了以下依赖：
 
 ```xml
 <dependency>
@@ -77,7 +77,7 @@ spring:
 
 ### 2.2 MinIO配置
 
-在[file-service](file:///Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file)的`application.yml`中添加了MinIO配置：
+在file-service的`application.yml`中添加了MinIO配置：
 
 ```yaml
 minio:
@@ -178,7 +178,7 @@ zookeeper:
 
 更新了相关服务的依赖配置，确保它们能正确连接到Kafka和MinIO：
 
-1. [message-service](file:///Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message)依赖Kafka服务：
+1. message-service依赖Kafka服务：
 ```yaml
 depends_on:
   mysql:
@@ -189,7 +189,7 @@ depends_on:
     condition: service_healthy
 ```
 
-2. [file-service](file:///Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file)依赖MinIO服务：
+2. file-service依赖MinIO服务：
 ```yaml
 depends_on:
   minio:
