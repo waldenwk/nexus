@@ -1,5 +1,5 @@
 .header {
-  background: #fff;
+  background: var(--header-bg);
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   position: fixed;
   top: 0;
@@ -7,6 +7,7 @@
   right: 0;
   z-index: 1000;
   height: 60px;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .header-container {
@@ -22,7 +23,7 @@
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #007bff;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -36,7 +37,7 @@
 }
 
 .nav-link {
-  color: #333;
+  color: var(--text-primary);
   text-decoration: none;
   margin-left: 1rem;
   padding: 0.5rem 1rem;
@@ -45,5 +46,37 @@
 }
 
 .nav-link:hover {
-  background-color: #f8f9fa;
+  background-color: var(--hover-bg);
+}
+
+.theme-icon {
+  color: var(--text-primary);
+}
+
+.theme-icon.default::before {
+  content: "🎨";
+}
+
+.theme-icon.dark::before {
+  content: "🌙";
+}
+
+.theme-icon.light::before {
+  content: "☀️";
+}
+
+.theme-icon.blue::before {
+  content: "💙";
+}
+
+.theme-icon.green::before {
+  content: "💚";
+}
+
+.theme-icon.purple::before {
+  content: "💜";
+}
+
+.theme-icon.orange::before {
+  content: "🧡";
 }

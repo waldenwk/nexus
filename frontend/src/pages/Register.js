@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ApiService from '../services/api';
+import { t } from '../services/i18n';
 import './Register.css';
 
 const Register = () => {
@@ -23,7 +24,7 @@ const Register = () => {
     e.preventDefault();
     
     if (password !== password2) {
-      setError('两次输入的密码不一致');
+      setError(t('error.passwordMismatch'));
       return;
     }
     
@@ -38,10 +39,10 @@ const Register = () => {
         // 重定向到首页
         window.location.href = '/';
       } else {
-        setError('注册失败，请稍后重试');
+        setError(t('error.register'));
       }
     } catch (err) {
-      setError('注册过程中发生错误，请稍后重试');
+      setError(t('error.network'));
     } finally {
       setLoading(false);
     }
@@ -50,7 +51,7 @@ const Register = () => {
   return (
     <div className="register">
       <div className="register-container">
-        <h2>创建 Nexus 账户</h2>
+        <h2>{t('auth.register')}</h2>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={onSubmit} className="register-form">
           <div className="form-group">
@@ -59,7 +60,7 @@ const Register = () => {
               name="username"
               value={username}
               onChange={onChange}
-              placeholder="用户名"
+              placeholder={t('auth.username')}
               required
             />
           </div>
@@ -70,7 +71,7 @@ const Register = () => {
               name="email"
               value={email}
               onChange={onChange}
-              placeholder="邮箱地址"
+              placeholder={t('auth.email')}
               required
             />
           </div>
@@ -81,7 +82,7 @@ const Register = () => {
               name="password"
               value={password}
               onChange={onChange}
-              placeholder="密码"
+              placeholder={t('auth.password')}
               required
             />
           </div>
@@ -92,18 +93,18 @@ const Register = () => {
               name="password2"
               value={password2}
               onChange={onChange}
-              placeholder="确认密码"
+              placeholder={t('auth.confirmPassword')}
               required
             />
           </div>
           
           <button type="submit" className="register-btn" disabled={loading}>
-            {loading ? '注册中...' : '注册'}
+            {loading ? t('common.loading') : t('auth.register')}
           </button>
         </form>
         
         <div className="register-footer">
-          <p>已有账户? <a href="/login">立即登录</a></p>
+          <p>{t('auth.hasAccount')} <a href="/login">{t('auth.login')}</a></p>
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './Sidebar.css';
+import { t } from '../services/i18n';
 
 const Sidebar = () => {
   return (
@@ -10,43 +11,43 @@ const Sidebar = () => {
           <li>
             <Link to="/" className="sidebar-link">
               <span className="icon">🏠</span>
-              <span className="text">首页</span>
+              <span className="text">{t('nav.home')}</span>
             </Link>
           </li>
           <li>
             <Link to="/timeline" className="sidebar-link">
               <span className="icon">📰</span>
-              <span className="text">时间轴</span>
+              <span className="text">{t('timeline.title')}</span>
             </Link>
           </li>
           <li>
             <Link to="/profile" className="sidebar-link">
               <span className="icon">👤</span>
-              <span className="text">个人资料</span>
+              <span className="text">{t('nav.profile')}</span>
             </Link>
           </li>
           <li>
             <Link to="/friends" className="sidebar-link">
               <span className="icon">👥</span>
-              <span className="text">朋友</span>
+              <span className="text">{t('nav.friends')}</span>
             </Link>
           </li>
           <li>
             <Link to="/messages" className="sidebar-link">
               <span className="icon">💬</span>
-              <span className="text">消息</span>
+              <span className="text">{t('nav.messages')}</span>
             </Link>
           </li>
           <li>
             <Link to="/album" className="sidebar-link">
               <span className="icon">🖼️</span>
-              <span className="text">相册</span>
+              <span className="text">{t('nav.photos')}</span>
             </Link>
           </li>
           <li>
             <Link to="/settings" className="sidebar-link">
               <span className="icon">⚙️</span>
-              <span className="text">设置</span>
+              <span className="text">{t('nav.settings')}</span>
             </Link>
           </li>
         </ul>

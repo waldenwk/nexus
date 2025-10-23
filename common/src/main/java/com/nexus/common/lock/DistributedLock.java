@@ -16,7 +16,12 @@ public class DistributedLock {
     
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
-    
+
+    // Lua脚本用于安全地释放分布式锁
+    private static final String UNLOCK_SCRIPT = "if redis.call('get', KEYS[1]) == ARGV[1] then " +
+            "return redis.call('del', KEYS[1]) " +
+            "else return 0 end";
+
     /**
      * 获取分布式锁
      * @param lockKey 锁key
@@ -37,22 +42,29 @@ public class DistributedLock {
      * @return 是否释放成功
      */
     public boolean unlock(String lockKey, String lockValue) {
-        String script = "if redis.call('get', KEYS[1]) == ARGV[1] then " +
-                       "return redis.call('del', KEYS[1]) " +
-                       "else return 0 end";
+        // 参数验证
+        if (lockKey == null || lockValue == null) {
+            return false;
+        }
         
-        // 使用Lua脚本确保原子性
-        Object result = redisTemplate.execute(
-            (connection) -> connection.eval(
-                script.getBytes(),
-                org.springframework.data.redis.connection.ReturnType.INTEGER,
-                1,
-                lockKey.getBytes(),
-                lockValue.getBytes()
-            )
-        );
-        
-        return result != null && "1".equals(result.toString());
+        try {
+            // 使用Lua脚本确保原子性
+            Object result = redisTemplate.execute((org.springframework.data.redis.core.RedisCallback<Object>) connection -> 
+                connection.scriptLoad(UNLOCK_SCRIPT.getBytes()) != null ? 
+                connection.eval(UNLOCK_SCRIPT.getBytes(), 
+                    org.springframework.data.redis.connection.ReturnType.INTEGER, 
+                    1, 
+                    lockKey.getBytes(), 
+                    lockValue.getBytes()) : 
+                null
+            );
+            
+            return result != null && "1".equals(result.toString());
+        } catch (Exception e) {
+            // 记录异常日志，但不抛出以免影响业务流程
+            // 可以使用适当的日志框架记录
+            return false;
+        }
     }
     
     /**

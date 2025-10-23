@@ -16,6 +16,7 @@ Nexus 是一个现代化的校园社交网络平台，复刻经典人人网（�
 - **智能推荐**: 基于用户行为和关系的智能推荐算法
 - **易部署**: 基于 Docker 容器化部署，一键启动整个平台
 - **可监控**: 集成 Prometheus 和 Grafana 实现系统监控和告警
+- **多语言支持**: 支持中英文切换，易于扩展更多语言
 
 ## 技术架构
 
@@ -30,6 +31,7 @@ Nexus 是一个现代化的校园社交网络平台，复刻经典人人网（�
 - **认证授权**: Spring Security + JWT
 - **监控**: Prometheus + Grafana
 - **图片处理**: React Image Crop
+- **国际化**: 自定义i18n解决方案
 
 ### 架构图
 
@@ -154,6 +156,28 @@ graph TB
 6. **页面**
    - 为校园社团、学生组织、本地商家创建官方页面，用户可"关注"而非"加为好友"
 
+## 国际化支持
+
+Nexus平台支持多语言，使全球用户能够以自己的语言使用平台。
+
+### 当前支持的语言
+
+- 中文 (简体)
+- 英文
+
+### 语言切换
+
+用户可以通过以下方式切换语言：
+
+1. 页面头部的语言选择器
+2. 设置页面的语言选项
+
+语言设置会保存在浏览器的 localStorage 中，用户下次访问时会自动使用上次选择的语言。
+
+### 扩展新语言
+
+平台采用模块化的国际化解决方案，可以轻松添加新语言支持。详细说明请参考 [I18N.md](./I18N.md) 文档。
+
 ## 部署说明
 
 ### 前置条件
@@ -174,7 +198,7 @@ graph TB
 
 使用Docker Compose部署基础设施：
 
-```bash
+```
 docker-compose up -d
 ```
 
@@ -182,7 +206,7 @@ docker-compose up -d
 
 ### 监控系统部署
 
-```bash
+```
 cd monitoring
 docker-compose -f docker-compose-monitoring.yml up -d
 ```
@@ -191,7 +215,7 @@ docker-compose -f docker-compose-monitoring.yml up -d
 
 ### 服务部署
 
-```bash
+```
 docker-compose -f docker-compose-services.yml up -d
 ```
 
@@ -270,7 +294,7 @@ docker-compose -f docker-compose-services.yml up -d
 
 如需手动初始化，请执行：
 
-```sql
+```
 CREATE DATABASE IF NOT EXISTS nexus DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 

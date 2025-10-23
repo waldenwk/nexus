@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ApiService from '../services/api';
+import { t } from '../services/i18n';
 import './Login.css';
 
 const Login = () => {
@@ -30,10 +31,10 @@ const Login = () => {
         // 重定向到首页
         window.location.href = '/';
       } else {
-        setError('登录失败，请检查邮箱和密码');
+        setError(t('error.login'));
       }
     } catch (err) {
-      setError('登录过程中发生错误，请稍后重试');
+      setError(t('error.network'));
     } finally {
       setLoading(false);
     }
@@ -42,7 +43,7 @@ const Login = () => {
   return (
     <div className="login">
       <div className="login-container">
-        <h2>登录到 Nexus</h2>
+        <h2>{t('auth.login')}</h2>
         {error && <div className="error-message">{error}</div>}
         <form onSubmit={onSubmit} className="login-form">
           <div className="form-group">
@@ -51,7 +52,7 @@ const Login = () => {
               name="email"
               value={email}
               onChange={onChange}
-              placeholder="邮箱地址"
+              placeholder={t('auth.email')}
               required
             />
           </div>
@@ -62,18 +63,18 @@ const Login = () => {
               name="password"
               value={password}
               onChange={onChange}
-              placeholder="密码"
+              placeholder={t('auth.password')}
               required
             />
           </div>
           
           <button type="submit" className="login-btn" disabled={loading}>
-            {loading ? '登录中...' : '登录'}
+            {loading ? t('common.loading') : t('auth.login')}
           </button>
         </form>
         
         <div className="login-footer">
-          <p>还没有账户? <a href="/register">立即注册</a></p>
+          <p>{t('auth.noAccount')} <a href="/register">{t('auth.register')}</a></p>
         </div>
       </div>
     </div>
