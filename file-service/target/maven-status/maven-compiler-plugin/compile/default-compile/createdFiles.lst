@@ -1,7 +1,0 @@
-com/nexus/file/FileServiceApplication.class
-com/nexus/file/controller/CDNController.class
-com/nexus/file/controller/FileController.class
-com/nexus/file/util/CDNUtil.class
-com/nexus/file/config/CDNConfig.class
-com/nexus/file/config/MinioConfig.class
-com/nexus/file/service/FileService.class

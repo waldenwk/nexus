@@ -1,9 +1,0 @@
-com/nexus/event/service/EventService.class
-com/nexus/event/entity/EventStatus.class
-com/nexus/event/entity/AttendanceStatus.class
-com/nexus/event/entity/EventAttendee.class
-com/nexus/event/repository/EventRepository.class
-com/nexus/event/controller/EventController.class
-com/nexus/event/entity/Event.class
-com/nexus/event/EventServiceApplication.class
-com/nexus/event/repository/EventAttendeeRepository.class

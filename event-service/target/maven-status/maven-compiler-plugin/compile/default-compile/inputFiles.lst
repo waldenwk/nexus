@@ -1,9 +1,0 @@
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/EventServiceApplication.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/controller/EventController.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/entity/AttendanceStatus.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/entity/Event.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/entity/EventAttendee.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/entity/EventStatus.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/repository/EventAttendeeRepository.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/repository/EventRepository.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/event-service/src/main/java/com/nexus/event/service/EventService.java

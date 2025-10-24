@@ -1,9 +1,0 @@
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/GroupServiceApplication.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/controller/GroupController.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/entity/Group.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/entity/GroupMember.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/entity/GroupType.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/entity/MemberRole.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/repository/GroupMemberRepository.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/repository/GroupRepository.java
-/Users/wukui/IdeaProjects/AIArchitect001/nexus/group-service/src/main/java/com/nexus/group/service/GroupService.java
