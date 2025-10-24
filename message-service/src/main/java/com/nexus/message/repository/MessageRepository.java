@@ -12,4 +12,7 @@ public interface MessageRepository extends JpaRepository<PrivateMessage, Long> {
     
     @Query("SELECT m FROM PrivateMessage m WHERE (m.fromUserId = ?1 AND m.toUserId = ?2) OR (m.fromUserId = ?2 AND m.toUserId = ?1) ORDER BY m.createdAt ASC")
     List<PrivateMessage> findConversation(Long user1Id, Long user2Id);
+    
+    @Query("SELECT m FROM PrivateMessage m WHERE (m.fromUserId = ?1 AND m.toUserId = ?2) OR (m.fromUserId = ?2 AND m.toUserId = ?1) ORDER BY m.createdAt ASC")
+    List<PrivateMessage> findBySenderIdAndReceiverIdOrSenderIdAndReceiverIdOrderByTimestamp(Long senderId1, Long receiverId1, Long senderId2, Long receiverId2);
 }

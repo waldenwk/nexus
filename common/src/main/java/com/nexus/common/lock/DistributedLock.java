@@ -1,6 +1,8 @@
 package com.nexus.common.lock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.ReturnType;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
@@ -49,17 +51,15 @@ public class DistributedLock {
         
         try {
             // 使用Lua脚本确保原子性
-            Object result = redisTemplate.execute((org.springframework.data.redis.core.RedisCallback<Object>) connection -> 
-                connection.scriptLoad(UNLOCK_SCRIPT.getBytes()) != null ? 
+            Object result = redisTemplate.execute((RedisCallback<Long>) connection -> 
                 connection.eval(UNLOCK_SCRIPT.getBytes(), 
-                    org.springframework.data.redis.connection.ReturnType.INTEGER, 
+                    ReturnType.INTEGER, 
                     1, 
                     lockKey.getBytes(), 
-                    lockValue.getBytes()) : 
-                null
+                    lockValue.getBytes())
             );
             
-            return result != null && "1".equals(result.toString());
+            return result != null && result.equals(1L);
         } catch (Exception e) {
             // 记录异常日志，但不抛出以免影响业务流程
             // 可以使用适当的日志框架记录

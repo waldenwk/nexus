@@ -76,11 +76,27 @@ public class PrivateMessage {
         this.createdAt = createdAt;
     }
     
+    public LocalDateTime getTimestamp() {
+        return createdAt;
+    }
+    
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.createdAt = timestamp;
+    }
+    
     public Boolean getRead() {
         return isRead;
     }
     
     public void setRead(Boolean read) {
         isRead = read;
+    }
+    
+    public Long getSenderId() {
+        return fromUserId;
+    }
+    
+    public Long getReceiverId() {
+        return toUserId;
     }
 }

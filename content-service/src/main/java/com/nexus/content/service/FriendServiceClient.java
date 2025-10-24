@@ -20,4 +20,12 @@ public interface FriendServiceClient {
      */
     @GetMapping("/api/friends/{userId}")
     List<Long> getUserFriends(@PathVariable("userId") Long userId);
+    
+    /**
+     * 获取用户的好友ID列表
+     * @param userId 用户ID
+     * @return 好友ID列表
+     */
+    @GetMapping("/api/friends/ids/{userId}")
+    List<Long> getUserFriendIds(@PathVariable("userId") Long userId);
 }

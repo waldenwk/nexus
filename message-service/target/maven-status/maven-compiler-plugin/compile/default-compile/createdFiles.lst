@@ -1,0 +1,8 @@
+com/nexus/message/controller/MessageController.class
+com/nexus/message/service/MessageService.class
+com/nexus/message/kafka/MessageProducer.class
+com/nexus/message/repository/MessageRepository.class
+com/nexus/message/MessageServiceApplication.class
+com/nexus/message/entity/PrivateMessage.class
+com/nexus/message/config/KafkaConfig.class
+com/nexus/message/kafka/MessageConsumer.class

@@ -2,18 +2,13 @@ package com.nexus.common.cache;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
 
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
-@SpringBootTest
 public class MultilevelCacheTest {
 
     @Test
@@ -27,16 +22,12 @@ public class MultilevelCacheTest {
                 .expireAfterAccess(5, TimeUnit.MINUTES)
                 .recordStats());
 
-        // 创建Redis连接工厂
-        RedisConnectionFactory redisConnectionFactory = new LettuceConnectionFactory();
+        // 创建模拟的Redis缓存管理器
+        org.springframework.data.redis.cache.RedisCacheManager redisCacheManager = mock(org.springframework.data.redis.cache.RedisCacheManager.class);
         
-        // 创建RedisTemplate
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.afterPropertiesSet();
-        
-        // 创建Redis缓存管理器
-        RedisCacheManager redisCacheManager = RedisCacheManager.builder(redisConnectionFactory).build();
+        // 创建模拟的缓存
+        org.springframework.cache.Cache mockRedisCache = mock(org.springframework.cache.Cache.class);
+        when(redisCacheManager.getCache("testCache")).thenReturn(mockRedisCache);
 
         // 创建多级缓存管理器
         MultilevelCacheManager multilevelCacheManager = new MultilevelCacheManager(caffeineCacheManager, redisCacheManager);

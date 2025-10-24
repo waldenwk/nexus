@@ -1,0 +1,33 @@
+# 搜索服务端口配置
+server:
+  port: 8087
+
+# Spring应用配置
+spring:
+  application:
+    # 应用名称
+    name: search-service
+    
+# Eureka客户端配置
+eureka:
+  client:
+    service-url:
+      # Eureka服务注册中心地址
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      
+# Elasticsearch配置
+elasticsearch:
+  # Elasticsearch服务器地址
+  hosts: ${ES_HOST:localhost}:${ES_PORT:9200}
+  
+# Spring Boot Actuator管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露的端点，包括健康检查、基本信息和Prometheus监控
+        include: health,info,prometheus
+  # 监控指标配置
+  metrics:
+    tags:
+      application: ${spring.application.name}

@@ -1,0 +1,9 @@
+com/nexus/group/GroupServiceApplication.class
+com/nexus/group/entity/GroupType.class
+com/nexus/group/repository/GroupMemberRepository.class
+com/nexus/group/repository/GroupRepository.class
+com/nexus/group/entity/Group.class
+com/nexus/group/entity/MemberRole.class
+com/nexus/group/entity/GroupMember.class
+com/nexus/group/service/GroupService.class
+com/nexus/group/controller/GroupController.class

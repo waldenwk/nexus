@@ -4,7 +4,7 @@ import com.nexus.file.config.CDNConfig;
 import com.nexus.file.util.CDNUtil;
 import io.minio.MinioClient;
 import io.minio.GetPresignedObjectUrlArgs;
-import io.minio.errors.MinioException;
+import io.minio.errors.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-public class FileServiceCDNTest {
+class FileServiceCDNTest {
 
     @Mock
     private MinioClient minioClient;
@@ -50,7 +50,7 @@ public class FileServiceCDNTest {
     }
 
     @Test
-    public void testGetFileUrl_WithCDNEnabled() throws Exception {
+    void testGetFileUrl_WithCDNEnabled() throws Exception {
         // 准备测试数据
         String fileName = "test-file.jpg";
         String expectedCDNUrl = "https://cdn.example.com/test-bucket/test-file.jpg";
@@ -66,7 +66,7 @@ public class FileServiceCDNTest {
     }
 
     @Test
-    public void testGetFileUrl_WithCDNDisabled() throws Exception {
+    void testGetFileUrl_WithCDNDisabled() throws Exception {
         // 准备测试数据
         String fileName = "test-file.jpg";
         String expectedMinioUrl = "https://minio.example.com/test-bucket/test-file.jpg";
@@ -84,14 +84,14 @@ public class FileServiceCDNTest {
     }
 
     @Test
-    public void testGetFileUrl_MinioException() throws Exception {
+    void testGetFileUrl_MinioException() throws Exception {
         // 准备测试数据
         String fileName = "test-file.jpg";
 
         // 设置 mock 行为
         when(cdnUtil.buildCDNUrl("test-bucket", fileName)).thenReturn(null);
         when(minioClient.getPresignedObjectUrl(any(GetPresignedObjectUrlArgs.class)))
-                .thenThrow(new MinioException("Minio error"));
+                .thenThrow(new InsufficientDataException("Insufficient data"));
 
         // 执行测试并验证异常
         assertThrows(IOException.class, () -> {

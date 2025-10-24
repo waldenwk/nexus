@@ -1,0 +1,138 @@
+# API网关端口配置
+server:
+  port: 8080
+
+# Spring应用配置
+spring:
+  application:
+    # 应用名称
+    name: api-gateway
+  # Redis配置
+  redis:
+    host: ${REDIS_HOST:nexus-redis}
+    port: ${REDIS_PORT:6379}
+    timeout: 2000ms
+  # Spring Cloud Gateway配置
+  cloud:
+    gateway:
+      # 全局过滤器
+      default-filters:
+        - name: JwtAuthentication
+        - name: Logging
+      # 路由配置
+      routes:
+        # 用户服务路由
+        - id: user-service
+          # 路由目标URI，lb://表示使用负载均衡
+          uri: lb://user-service
+          # 路由断言，匹配/api/users/开头的请求
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 内容服务路由
+        - id: content-service
+          uri: lb://content-service
+          predicates:
+            - Path=/api/content/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 消息服务路由
+        - id: message-service
+          uri: lb://message-service
+          predicates:
+            - Path=/api/messages/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 信息流服务路由
+        - id: feed-service
+          uri: lb://feed-service
+          predicates:
+            - Path=/api/feed/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 群组服务路由
+        - id: group-service
+          uri: lb://group-service
+          predicates:
+            - Path=/api/groups/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 活动服务路由
+        - id: event-service
+          uri: lb://event-service
+          predicates:
+            - Path=/api/events/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 搜索服务路由
+        - id: search-service
+          uri: lb://search-service
+          predicates:
+            - Path=/api/search/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 文件服务路由
+        - id: file-service
+          uri: lb://file-service
+          predicates:
+            - Path=/api/files/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+        # 认证服务路由
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - name: RateLimit
+              args:
+                limit: 100
+                windowSeconds: 60
+
+# Eureka客户端配置
+eureka:
+  client:
+    service-url:
+      # Eureka服务注册中心地址
+      defaultZone: ${EUREKA_SERVER_URL:http://localhost:8761/eureka/}
+      
+# JWT配置
+jwt:
+  secret: nexus_secret_key
+
+# Spring Boot Actuator管理端点配置
+management:
+  endpoints:
+    web:
+      exposure:
+        # 暴露的端点，包括健康检查、基本信息、网关信息和Prometheus监控
+        include: health,info,gateway,prometheus
+  # 监控指标配置
+  metrics:
+    tags:
+      application: ${spring.application.name}

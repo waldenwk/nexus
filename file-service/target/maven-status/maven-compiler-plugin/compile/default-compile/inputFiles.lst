@@ -1,0 +1,7 @@
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/FileServiceApplication.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/config/CDNConfig.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/config/MinioConfig.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/controller/CDNController.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/controller/FileController.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/service/FileService.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/file-service/src/main/java/com/nexus/file/util/CDNUtil.java

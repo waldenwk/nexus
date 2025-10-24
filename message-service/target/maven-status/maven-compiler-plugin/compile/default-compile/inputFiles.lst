@@ -1,0 +1,8 @@
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/MessageServiceApplication.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/config/KafkaConfig.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/controller/MessageController.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/entity/PrivateMessage.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/kafka/MessageConsumer.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/kafka/MessageProducer.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/repository/MessageRepository.java
+/Users/wukui/IdeaProjects/AIArchitect001/nexus/message-service/src/main/java/com/nexus/message/service/MessageService.java
